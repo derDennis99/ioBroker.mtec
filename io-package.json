@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mtec",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "news": {
+      "0.4.0": {
+        "en": "Breaking: money data points renamed (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), today's values are migrated. New input profile MTECmqtt (Energy Butler). English base language, all ioBroker languages, new icon. Requires Node.js 22, js-controller 6.0.11 and admin 7.6.20",
+        "de": "Breaking: Geld-Datenpunkte umbenannt (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), die heutigen Werte werden übernommen. Neues Eingangsprofil MTECmqtt (Energy Butler). Englisch als Basissprache, alle ioBroker-Sprachen, neues Icon. Benötigt Node.js 22, js-controller 6.0.11 und Admin 7.6.20",
+        "ru": "Несовместимо: переименованы денежные точки данных (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), сегодняшние значения переносятся. Новый входной профиль MTECmqtt (Energy Butler). Английский как базовый язык, все языки ioBroker, новый значок. Требуются Node.js 22, js-controller 6.0.11 и admin 7.6.20",
+        "pt": "Incompatível: pontos de dados monetários renomeados (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), os valores de hoje são migrados. Novo perfil de entrada MTECmqtt (Energy Butler). Inglês como idioma base, todos os idiomas do ioBroker, novo ícone. Requer Node.js 22, js-controller 6.0.11 e admin 7.6.20",
+        "nl": "Niet compatibel: geld-datapunten hernoemd (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), de waarden van vandaag worden overgenomen. Nieuw invoerprofiel MTECmqtt (Energy Butler). Engels als basistaal, alle ioBroker-talen, nieuw pictogram. Vereist Node.js 22, js-controller 6.0.11 en admin 7.6.20",
+        "fr": "Incompatible : points de données monétaires renommés (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), les valeurs du jour sont reprises. Nouveau profil d'entrée MTECmqtt (Energy Butler). Anglais comme langue de base, toutes les langues ioBroker, nouvelle icône. Nécessite Node.js 22, js-controller 6.0.11 et admin 7.6.20",
+        "it": "Incompatibile: punti dati monetari rinominati (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), i valori di oggi vengono migrati. Nuovo profilo di ingresso MTECmqtt (Energy Butler). Inglese come lingua di base, tutte le lingue di ioBroker, nuova icona. Richiede Node.js 22, js-controller 6.0.11 e admin 7.6.20",
+        "es": "Incompatible: puntos de datos monetarios renombrados (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), los valores de hoy se migran. Nuevo perfil de entrada MTECmqtt (Energy Butler). Inglés como idioma base, todos los idiomas de ioBroker, nuevo icono. Requiere Node.js 22, js-controller 6.0.11 y admin 7.6.20",
+        "pl": "Niezgodne wstecz: zmieniono nazwy punktów danych kwot (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), dzisiejsze wartości są przenoszone. Nowy profil wejściowy MTECmqtt (Energy Butler). Angielski jako język bazowy, wszystkie języki ioBroker, nowa ikona. Wymaga Node.js 22, js-controller 6.0.11 i admin 7.6.20",
+        "uk": "Несумісно: перейменовано грошові точки даних (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), сьогоднішні значення переносяться. Новий вхідний профіль MTECmqtt (Energy Butler). Англійська як базова мова, усі мови ioBroker, новий значок. Потрібні Node.js 22, js-controller 6.0.11 та admin 7.6.20",
+        "zh-cn": "不兼容更改：重命名金额数据点 (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings)，当天数值会被迁移。新的输入配置 MTECmqtt（Energy Butler）。以英语为基础语言，支持所有 ioBroker 语言，新图标。需要 Node.js 22、js-controller 6.0.11 和 admin 7.6.20"
+      },
       "0.3.0": {
         "en": "Configurable currency; grid balance (+ revenue / − cost per hour) as number and text",
         "de": "Währung einstellbar; Netz-Bilanz (+ Erlös / − Kosten pro Stunde) als Zahl und Text",

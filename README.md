@@ -230,7 +230,7 @@ Changelog und Lizenz stehen unten auf Englisch.
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.4.0 (2026-10-17)
 
 - (breaking) Money data points renamed: `analysis.cost_now_eur_h` → `cost_now_per_h`, `savings_now_eur_h` → `savings_now_per_h`, `grid_balance_eur_h` → `grid_balance_per_h`, `today.cost_eur` → `today.cost`, `today.savings_eur` → `today.savings`. Today's values are taken over, the old objects are deleted.
 - New input profile `mtecmqtt`: Energy Butler via the MQTT output of MTECmqtt, including further values and real daily energy counters
