@@ -1,0 +1,122 @@
+{
+  "common": {
+    "name": "mtec",
+    "version": "0.3.0",
+    "news": {
+      "0.3.0": {
+        "en": "Configurable currency; grid balance (+ revenue / − cost per hour) as number and text",
+        "de": "Währung einstellbar; Netz-Bilanz (+ Erlös / − Kosten pro Stunde) als Zahl und Text"
+      },
+      "0.2.1": {
+        "en": "Prices below 1 are read as €/kWh; clearer labels",
+        "de": "Preise unter 1 werden als €/kWh verstanden; klarere Feldtexte"
+      },
+      "0.2.0": {
+        "en": "Analysis: house consumption, autarky, battery forecast, costs/savings, daily values",
+        "de": "Auswertung: Hausverbrauch, Autarkie, Akku-Prognose, Kosten/Ersparnis, Tageswerte"
+      },
+      "0.1.0": {
+        "en": "Initial version: read heat pump and Energy Butler telemetry via MQTT",
+        "de": "Erste Version: Telemetrie von Wärmepumpe und Energy Butler über MQTT lesen"
+      }
+    },
+    "titleLang": {
+      "en": "M-TEC Energy Butler & Heat Pump",
+      "de": "M-TEC Energy Butler & Wärmepumpe"
+    },
+    "desc": {
+      "en": "Reads M-TEC Energy Butler and heat pump data from an MQTT broker (JSON or MTECmqtt) and analyses it",
+      "de": "Liest Daten von M-TEC Energy Butler und Wärmepumpe von einem MQTT-Broker (JSON oder MTECmqtt) und wertet sie aus"
+    },
+    "authors": [
+      "derDennis99"
+    ],
+    "keywords": [
+      "m-tec",
+      "energybutler",
+      "heatpump",
+      "mqtt"
+    ],
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
+    "platform": "Javascript/Node.js",
+    "icon": "mtec.svg",
+    "enabled": true,
+    "extIcon": "",
+    "readme": "",
+    "loglevel": "info",
+    "tier": 2,
+    "mode": "daemon",
+    "type": "energy",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "adminUI": {
+      "config": "json"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.19"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=6.17.14"
+      }
+    ]
+  },
+  "native": {
+    "host": "",
+    "port": 1883,
+    "username": "",
+    "password": "",
+    "profile": "json",
+    "topicHeatpump": "energy/heatpump/telemetry",
+    "topicButler": "energy/butler/telemetry",
+    "mtecTopicPrefix": "MTEC",
+    "mtecSerial": "",
+    "staleSeconds": 20,
+    "staleSecondsSlow": 180,
+    "batteryCapacityKwh": 15,
+    "batteryMinSoc": 10,
+    "priceImportCt": 0,
+    "priceExportCt": 0,
+    "surplusThresholdW": 1000,
+    "currency": "€"
+  },
+  "encryptedNative": [
+    "password"
+  ],
+  "protectedNative": [
+    "password"
+  ],
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": {
+          "en": "Connected to the MQTT broker",
+          "de": "Verbunden mit dem MQTT-Broker"
+        },
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
+}

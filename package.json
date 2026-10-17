@@ -1,0 +1,45 @@
+{
+  "name": "iobroker.mtec",
+  "version": "0.3.0",
+  "description": "M-TEC Energy Butler and heat pump data from MQTT (JSON or MTECmqtt) for ioBroker, with energy analysis",
+  "author": "derDennis99",
+  "license": "MIT",
+  "homepage": "https://github.com/derDennis99/ioBroker.mtec",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/derDennis99/ioBroker.mtec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/derDennis99/ioBroker.mtec/issues"
+  },
+  "keywords": [
+    "ioBroker",
+    "m-tec",
+    "energybutler",
+    "heatpump",
+    "mqtt"
+  ],
+  "main": "main.js",
+  "files": [
+    "admin/",
+    "lib/",
+    "main.js",
+    "io-package.json",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@iobroker/adapter-core": "^3.4.3",
+    "mqtt": "^5.16.1"
+  },
+  "devDependencies": {
+    "@iobroker/testing": "^6.3.1",
+    "aedes": "^1.2.0"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "check-broker": "node tools/mqtt-check.mjs"
+  }
+}

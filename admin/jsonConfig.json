@@ -1,0 +1,189 @@
+{
+  "i18n": true,
+  "type": "panel",
+  "items": {
+    "_header": {
+      "type": "header",
+      "text": "MQTT broker",
+      "size": 3
+    },
+    "host": {
+      "type": "text",
+      "label": "Broker (IP address or host name)",
+      "xs": 12,
+      "sm": 8,
+      "md": 6
+    },
+    "port": {
+      "type": "number",
+      "label": "Port",
+      "min": 1,
+      "max": 65535,
+      "xs": 12,
+      "sm": 4,
+      "md": 2
+    },
+    "username": {
+      "newLine": true,
+      "type": "text",
+      "label": "User",
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "password": {
+      "type": "password",
+      "label": "Password",
+      "repeat": false,
+      "visible": true,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "_source": {
+      "newLine": true,
+      "type": "header",
+      "text": "Data source",
+      "size": 3
+    },
+    "profile": {
+      "type": "select",
+      "label": "Input profile",
+      "help": "profile_help",
+      "default": "json",
+      "options": [
+        { "label": "JSON (fields + timestamp)", "value": "json" },
+        { "label": "MTECmqtt (Energy Butler only)", "value": "mtecmqtt" }
+      ],
+      "xs": 12,
+      "sm": 12,
+      "md": 8
+    },
+    "topicHeatpump": {
+      "newLine": true,
+      "type": "text",
+      "label": "Heat pump topic (JSON)",
+      "help": "Empty = no heat pump",
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "topicButler": {
+      "type": "text",
+      "label": "Energy Butler topic (JSON)",
+      "help": "Empty = no Energy Butler",
+      "hidden": "data.profile === 'mtecmqtt'",
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "mtecTopicPrefix": {
+      "newLine": true,
+      "type": "text",
+      "label": "MTECmqtt topic prefix",
+      "help": "MQTT_TOPIC in the MTECmqtt configuration, default MTEC",
+      "hidden": "data.profile !== 'mtecmqtt'",
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "mtecSerial": {
+      "type": "text",
+      "label": "Serial number of the Energy Butler",
+      "help": "Empty = use the first one seen. With several devices: one instance per device.",
+      "hidden": "data.profile !== 'mtecmqtt'",
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "staleSeconds": {
+      "newLine": true,
+      "type": "number",
+      "label": "Data counts as outdated after (seconds)",
+      "help": "staleSeconds_help",
+      "min": 5,
+      "max": 3600,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "staleSecondsSlow": {
+      "type": "number",
+      "label": "Slow MTECmqtt groups count as outdated after (seconds)",
+      "help": "staleSecondsSlow_help",
+      "hidden": "data.profile !== 'mtecmqtt'",
+      "min": 60,
+      "max": 3600,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "_analysis": {
+      "newLine": true,
+      "type": "header",
+      "text": "Analysis",
+      "size": 3
+    },
+    "batteryCapacityKwh": {
+      "type": "number",
+      "label": "Usable battery capacity (kWh)",
+      "min": 0,
+      "max": 200,
+      "step": 0.1,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "batteryMinSoc": {
+      "type": "number",
+      "label": "Battery discharges down to (%)",
+      "min": 0,
+      "max": 100,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "priceImportCt": {
+      "newLine": true,
+      "type": "number",
+      "label": "Grid import price in cents per kWh (e.g. 26)",
+      "help": "priceImportCt_help",
+      "min": 0,
+      "max": 200,
+      "step": 0.01,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "priceExportCt": {
+      "type": "number",
+      "label": "Feed-in tariff in cents per kWh (e.g. 8.1)",
+      "help": "In cents; 0 = not set",
+      "min": 0,
+      "max": 100,
+      "step": 0.01,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "currency": {
+      "type": "text",
+      "label": "Currency",
+      "help": "currency_help",
+      "maxLength": 6,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    },
+    "surplusThresholdW": {
+      "newLine": true,
+      "type": "number",
+      "label": "\"Solar power to spare\" from (W, 5 min average)",
+      "min": 100,
+      "max": 20000,
+      "xs": 12,
+      "sm": 6,
+      "md": 4
+    }
+  }
+}
