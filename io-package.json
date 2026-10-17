@@ -15,58 +15,6 @@
         "pl": "Niezgodne wstecz: zmieniono nazwy punktów danych kwot (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), dzisiejsze wartości są przenoszone. Nowy profil wejściowy MTECmqtt (Energy Butler). Angielski jako język bazowy, wszystkie języki ioBroker, nowa ikona. Wymaga Node.js 22, js-controller 6.0.11 i admin 7.6.20",
         "uk": "Несумісно: перейменовано грошові точки даних (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), сьогоднішні значення переносяться. Новий вхідний профіль MTECmqtt (Energy Butler). Англійська як базова мова, усі мови ioBroker, новий значок. Потрібні Node.js 22, js-controller 6.0.11 та admin 7.6.20",
         "zh-cn": "不兼容更改：重命名金额数据点 (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings)，当天数值会被迁移。新的输入配置 MTECmqtt（Energy Butler）。以英语为基础语言，支持所有 ioBroker 语言，新图标。需要 Node.js 22、js-controller 6.0.11 和 admin 7.6.20"
-      },
-      "0.3.0": {
-        "en": "Configurable currency; grid balance (+ revenue / − cost per hour) as number and text",
-        "de": "Währung einstellbar; Netz-Bilanz (+ Erlös / − Kosten pro Stunde) als Zahl und Text",
-        "ru": "Настраиваемая валюта; баланс сети (+ доход / − расходы в час) в виде числа и текста",
-        "pt": "Moeda configurável; balanço da rede (+ receita / − custo por hora) como número e texto",
-        "nl": "Instelbare valuta; netbalans (+ opbrengst / − kosten per uur) als getal en tekst",
-        "fr": "Devise configurable ; bilan réseau (+ revenu / − coût par heure) sous forme de nombre et de texte",
-        "it": "Valuta configurabile; bilancio di rete (+ ricavo / − costo all'ora) come numero e testo",
-        "es": "Moneda configurable; balance de red (+ ingresos / − costes por hora) como número y texto",
-        "pl": "Konfigurowalna waluta; bilans sieci (+ przychód / − koszt na godzinę) jako liczba i tekst",
-        "uk": "Налаштовувана валюта; баланс мережі (+ дохід / − витрати за годину) як число і текст",
-        "zh-cn": "可配置货币；电网收支（每小时 + 收入 / − 费用）以数字和文本显示"
-      },
-      "0.2.1": {
-        "en": "Prices below 1 are read as €/kWh; clearer labels",
-        "de": "Preise unter 1 werden als €/kWh verstanden; klarere Feldtexte",
-        "ru": "Цены ниже 1 считаются в €/кВт·ч; более понятные подписи",
-        "pt": "Preços abaixo de 1 são lidos como €/kWh; rótulos mais claros",
-        "nl": "Prijzen onder 1 worden gelezen als €/kWh; duidelijkere labels",
-        "fr": "Les prix inférieurs à 1 sont lus en €/kWh ; libellés plus clairs",
-        "it": "I prezzi inferiori a 1 vengono letti come €/kWh; etichette più chiare",
-        "es": "Los precios inferiores a 1 se interpretan como €/kWh; etiquetas más claras",
-        "pl": "Ceny poniżej 1 są odczytywane jako €/kWh; czytelniejsze etykiety",
-        "uk": "Ціни нижче 1 трактуються як €/кВт·год; зрозуміліші підписи",
-        "zh-cn": "低于 1 的价格按 €/kWh 解读；标签更清晰"
-      },
-      "0.2.0": {
-        "en": "Analysis: house consumption, autarky, battery forecast, costs/savings, daily values",
-        "de": "Auswertung: Hausverbrauch, Autarkie, Akku-Prognose, Kosten/Ersparnis, Tageswerte",
-        "ru": "Анализ: потребление дома, автономность, прогноз аккумулятора, затраты/экономия, дневные значения",
-        "pt": "Análise: consumo da casa, autossuficiência, previsão da bateria, custos/poupança, valores diários",
-        "nl": "Analyse: huisverbruik, zelfvoorziening, accuprognose, kosten/besparing, dagwaarden",
-        "fr": "Analyse : consommation de la maison, autonomie, prévision de la batterie, coûts/économies, valeurs journalières",
-        "it": "Analisi: consumo domestico, autosufficienza, previsione della batteria, costi/risparmi, valori giornalieri",
-        "es": "Análisis: consumo de la casa, autosuficiencia, previsión de la batería, costes/ahorros, valores diarios",
-        "pl": "Analiza: zużycie domu, autarkia, prognoza akumulatora, koszty/oszczędności, wartości dzienne",
-        "uk": "Аналіз: споживання будинку, автономність, прогноз акумулятора, витрати/економія, денні значення",
-        "zh-cn": "分析：家庭用电、自给率、电池预测、费用/节省、每日数值"
-      },
-      "0.1.0": {
-        "en": "Initial version: read heat pump and Energy Butler telemetry via MQTT",
-        "de": "Erste Version: Telemetrie von Wärmepumpe und Energy Butler über MQTT lesen",
-        "ru": "Первая версия: чтение телеметрии теплового насоса и Energy Butler через MQTT",
-        "pt": "Versão inicial: leitura da telemetria da bomba de calor e do Energy Butler via MQTT",
-        "nl": "Eerste versie: telemetrie van warmtepomp en Energy Butler via MQTT lezen",
-        "fr": "Version initiale : lecture de la télémétrie de la pompe à chaleur et de l'Energy Butler via MQTT",
-        "it": "Versione iniziale: lettura della telemetria della pompa di calore e dell'Energy Butler tramite MQTT",
-        "es": "Versión inicial: lectura de la telemetría de la bomba de calor y del Energy Butler mediante MQTT",
-        "pl": "Pierwsza wersja: odczyt telemetrii pompy ciepła i Energy Butler przez MQTT",
-        "uk": "Перша версія: зчитування телеметрії теплового насоса та Energy Butler через MQTT",
-        "zh-cn": "初始版本：通过 MQTT 读取热泵和 Energy Butler 的遥测数据"
       }
     },
     "titleLang": {
