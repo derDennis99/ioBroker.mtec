@@ -39,12 +39,17 @@ test('missing known fields become null with quality "not reported", not 0', () =
 
 test('floating point noise is smoothed, real decimals stay', () => {
     // values from a real system (15.10.2026)
-    const u = byField(hp().process(msg({
-        buffer_bottom_temperature_c: 31.400000000000002,
-        heatpump_target_temperature_c: 37.300000000000004,
-        heating_water_mass_flow_kg_s: 0.123456,
-        electrical_power_w: -628,
-    }), NOW));
+    const u = byField(
+        hp().process(
+            msg({
+                buffer_bottom_temperature_c: 31.400000000000002,
+                heatpump_target_temperature_c: 37.300000000000004,
+                heating_water_mass_flow_kg_s: 0.123456,
+                electrical_power_w: -628,
+            }),
+            NOW,
+        ),
+    );
     assert.equal(u.buffer_bottom_temperature_c.val, 31.4);
     assert.equal(u.heatpump_target_temperature_c.val, 37.3);
     assert.equal(u.heating_water_mass_flow_kg_s.val, 0.123456);
@@ -101,7 +106,12 @@ test('stale by age of the measurement', () => {
 test('stateCommon sets type, unit, multilingual name and state texts', () => {
     const f = DEVICES.heatpump.fields;
     assert.deepEqual(stateCommon('flow_temperature_c', f.flow_temperature_c), {
-        name: { en: 'Heat pump flow', de: 'WP-Vorlauf' }, type: 'number', role: 'value.temperature', read: true, write: false, unit: '°C',
+        name: { en: 'Heat pump flow', de: 'WP-Vorlauf' },
+        type: 'number',
+        role: 'value.temperature',
+        read: true,
+        write: false,
+        unit: '°C',
     });
     assert.equal(stateCommon('dhw_heat_request', f.dhw_heat_request).type, 'boolean');
     assert.equal(stateCommon('operating_status_code', f.operating_status_code).states[2], 'Heating');
@@ -125,9 +135,24 @@ test('JsonSource turns messages into records', () => {
 
 test('createSources: profile json is the default, the heat pump always uses json', () => {
     const json = createSources({ topicHeatpump: 'hp', topicButler: 'b' });
-    assert.deepEqual(json.map(s => [s.profile, s.device]), [['json', 'heatpump'], ['json', 'butler']]);
+    assert.deepEqual(
+        json.map(s => [s.profile, s.device]),
+        [
+            ['json', 'heatpump'],
+            ['json', 'butler'],
+        ],
+    );
     const mtec = createSources({ profile: 'mtecmqtt', topicHeatpump: 'hp', topicButler: 'b', mtecTopicPrefix: 'MTEC' });
-    assert.deepEqual(mtec.map(s => [s.profile, s.device]), [['json', 'heatpump'], ['mtecmqtt', 'butler']]);
-    assert.deepEqual(createSources({ profile: 'mtecmqtt' }).map(s => s.device), ['butler']);
+    assert.deepEqual(
+        mtec.map(s => [s.profile, s.device]),
+        [
+            ['json', 'heatpump'],
+            ['mtecmqtt', 'butler'],
+        ],
+    );
+    assert.deepEqual(
+        createSources({ profile: 'mtecmqtt' }).map(s => s.device),
+        ['butler'],
+    );
     assert.deepEqual(createSources({ topicHeatpump: ' ', topicButler: '' }), []);
 });

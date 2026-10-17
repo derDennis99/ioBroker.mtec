@@ -1,3 +1,5 @@
 node_modules/
 *.tgz
 mtec-test-*.json
+.commitinfo
+.dev-server/

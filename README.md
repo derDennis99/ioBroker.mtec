@@ -23,6 +23,8 @@ Direct access via Modbus (without extra software) is planned for a later version
 
 ## Installation
 
+Requirements: Node.js 22 or newer, js-controller 6.0.11 or newer, admin 7.6.20 or newer.
+
 The adapter is not yet published on npm. To test it, build the package and install it on the ioBroker host (default installation in `/opt/iobroker`):
 
 ```bash
@@ -106,7 +108,7 @@ npm install
 npm test
 ```
 
-The tests cover both input profiles, the analysis and the whole path through a local MQTT broker (aedes).
+The tests cover both input profiles, the analysis and the whole path through a local MQTT broker (aedes). `npm run test:integration` additionally starts the adapter in a real js-controller and checks the data flow from a local broker, `npm run lint` checks the code style.
 
 ## Deutsch
 
@@ -130,6 +132,8 @@ Mit `mtecmqtt` kann die Wärmepumpe gleichzeitig weiter über `json` gelesen wer
 Ein direkter Zugriff über Modbus (ohne Zusatzsoftware) ist für eine spätere Version geplant.
 
 ### Installation
+
+Voraussetzungen: Node.js 22 oder neuer, js-controller 6.0.11 oder neuer, Admin 7.6.20 oder neuer.
 
 Der Adapter ist noch nicht auf npm veröffentlicht. Zum Testen das Paket bauen und auf dem ioBroker-Host installieren (Standardinstallation unter `/opt/iobroker`):
 
@@ -216,7 +220,7 @@ npm install
 npm test
 ```
 
-Die Tests prüfen beide Eingangsprofile, die Auswertung und den ganzen Weg über einen lokalen MQTT-Broker (aedes).
+Die Tests prüfen beide Eingangsprofile, die Auswertung und den ganzen Weg über einen lokalen MQTT-Broker (aedes). `npm run test:integration` startet den Adapter zusätzlich in einem echten js-controller und prüft den Datenfluss von einem lokalen Broker, `npm run lint` prüft den Code-Stil.
 
 Changelog und Lizenz stehen unten auf Englisch.
 
@@ -233,6 +237,8 @@ Changelog und Lizenz stehen unten auf Englisch.
 - Input profile selection in the admin interface
 - English as base language: log messages, data point names (English and German), admin interface with translations; texts follow the system language
 - Public description of the `json` format
+- (breaking) Requires Node.js 22, js-controller 6.0.11 and admin 7.6.20 or newer
+- Admin interface and adapter description in all ioBroker languages
 
 ### 0.3.0 (2026-10-17)
 

@@ -12,7 +12,16 @@ const T0 = 1_791_956_345_000;
 
 const source = (o = {}) => new MtecmqttSource({ prefix: 'MTEC', staleMs: 20_000, slowStaleMs: 180_000, now: T0, ...o });
 
-/** Feeds the values of the given groups like one MTECmqtt loop, 20 ms apart; returns all results. */
+/**
+ * Feeds the values of the given groups like one MTECmqtt loop, 20 ms apart; returns all results.
+ *
+ * @param src
+ * @param groups
+ * @param start
+ * @param root0
+ * @param root0.serial
+ * @param root0.values
+ */
 function feed(src, groups, start, { serial = SERIAL, values = {} } = {}) {
     const out = [];
     let ts = start;
@@ -30,7 +39,9 @@ const extra = (rec, id) => rec.extras.find(e => e.id === id);
 
 test('subscribes to the prefix with QoS 0, with or without serial number', () => {
     assert.deepEqual(source().subscriptions, [{ topic: 'MTEC/+/#', qos: 0 }]);
-    assert.deepEqual(source({ prefix: '/home/MTEC/', serial: SERIAL }).subscriptions, [{ topic: `home/MTEC/${SERIAL}/#`, qos: 0 }]);
+    assert.deepEqual(source({ prefix: '/home/MTEC/', serial: SERIAL }).subscriptions, [
+        { topic: `home/MTEC/${SERIAL}/#`, qos: 0 },
+    ]);
     assert.deepEqual(source({ prefix: '' }).subscriptions, [{ topic: 'MTEC/+/#', qos: 0 }]);
     assert.equal(source().matches('MTEC/x/now-base/pv'), true);
     assert.equal(source().matches('homeassistant/sensor/MTEC_x/pv/config'), false);
@@ -92,7 +103,12 @@ test('"missing = null" applies per group', () => {
     feed(s, ['now-base'], T0, { values });
     const [rec] = s.flush(T0 + 2_500);
     const u = byField(rec);
-    for (const f of ['battery_power_signed_w', 'battery_charge_power_w', 'battery_discharge_power_w', 'battery_soc_percent']) {
+    for (const f of [
+        'battery_power_signed_w',
+        'battery_charge_power_w',
+        'battery_discharge_power_w',
+        'battery_soc_percent',
+    ]) {
         assert.deepEqual(u[f], { field: f, val: null, q: Q_SENSOR_NOT_REPORTED }, f);
     }
     assert.deepEqual(rec.rejected, ['now-base/battery_soc']);
@@ -104,11 +120,14 @@ test('slow groups set only their own fields and are not a main record', () => {
     feed(s, ['now-grid'], T0);
     const [rec] = s.flush(T0 + 2_500);
     assert.equal(rec.main, false);
-    assert.deepEqual(rec.updates.map(u => [u.field, u.val]), [
-        ['grid_phase_a_power_signed_w', -210],
-        ['grid_phase_b_power_signed_w', -200],
-        ['grid_phase_c_power_signed_w', -218],
-    ]);
+    assert.deepEqual(
+        rec.updates.map(u => [u.field, u.val]),
+        [
+            ['grid_phase_a_power_signed_w', -210],
+            ['grid_phase_b_power_signed_w', -200],
+            ['grid_phase_c_power_signed_w', -218],
+        ],
+    );
     assert.equal(s.lastTs, null);
     assert.equal(s.isStale(T0), true, 'without now-base the device stays stale');
     assert.equal(extra(rec, 'butler.mtecmqtt.now_grid.grid_fequency').common.unit, 'Hz');
@@ -122,7 +141,11 @@ test('a whole loop with several groups becomes one record', () => {
     assert.equal(rec.main, true);
     assert.equal(byField(rec).pv1_power_w.val, 1150);
     assert.deepEqual(rec.counters, {
-        grid_export_kwh: 0, grid_import_kwh: 4.3, battery_charge_kwh: 2.1, battery_discharge_kwh: 1.5, pv_kwh: 6.7,
+        grid_export_kwh: 0,
+        grid_import_kwh: 4.3,
+        battery_charge_kwh: 2.1,
+        battery_discharge_kwh: 1.5,
+        pv_kwh: 6.7,
     });
     assert.equal(extra(rec, 'butler.mtecmqtt.day.pv_day').common.unit, 'kWh');
     assert.equal(extra(rec, 'butler.mtecmqtt.day.autarky_rate_day').common.unit, '%');
@@ -197,7 +220,11 @@ test('values: numbers, text and a stable type per data point', () => {
     s.flush(T0 + 12_000);
     s.handle(`MTEC/${SERIAL}/now-pv/pv_voltage_1`, 'error', T0 + 20_000);
     const [later] = s.flush(T0 + 22_000);
-    assert.equal(extra(later, 'butler.mtecmqtt.now_pv.pv_voltage_1').val, null, 'text in a number data point becomes null');
+    assert.equal(
+        extra(later, 'butler.mtecmqtt.now_pv.pv_voltage_1').val,
+        null,
+        'text in a number data point becomes null',
+    );
 });
 
 test('units are only guessed where the naming is clear', () => {

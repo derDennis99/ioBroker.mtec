@@ -100,7 +100,10 @@ async function until(fn, ms = 3000) {
 function publish(topic, body, qos = 1) {
     const payload = Buffer.from(typeof body === 'string' ? body : JSON.stringify(body));
     return new Promise((resolve, reject) =>
-        broker.publish({ topic, payload, qos, retain: false, cmd: 'publish', dup: false }, e => (e ? reject(e) : resolve())));
+        broker.publish({ topic, payload, qos, retain: false, cmd: 'publish', dup: false }, e =>
+            e ? reject(e) : resolve(),
+        ),
+    );
 }
 
 test('json: creates objects, connects and writes values with the time of measurement', async () => {
@@ -110,7 +113,10 @@ test('json: creates objects, connects and writes values with the time of measure
     await bridge.start();
     try {
         assert.equal(adapter.objects['heatpump.flow_temperature_c'].common.unit, '°C');
-        assert.deepEqual(adapter.objects['butler.battery_soc_percent'].common.name, { en: 'Battery state of charge', de: 'Batterieladestand' });
+        assert.deepEqual(adapter.objects['butler.battery_soc_percent'].common.name, {
+            en: 'Battery state of charge',
+            de: 'Batterieladestand',
+        });
         assert.equal(adapter.objects['butler.info.serial'], undefined, 'serial number only with MTECmqtt');
         assert.equal(adapter.states['heatpump.info.stale'].val, true);
 
@@ -147,20 +153,36 @@ test('json: creates objects, connects and writes values with the time of measure
         await publish('energy/butler/telemetry', {
             name: 'butler',
             fields: {
-                battery_soc_percent: 81, pv_total_power_w: 3000, grid_import_power_w: 1000, grid_export_power_w: 0,
-                battery_charge_power_w: 500, battery_discharge_power_w: 0,
+                battery_soc_percent: 81,
+                pv_total_power_w: 3000,
+                grid_import_power_w: 1000,
+                grid_export_power_w: 0,
+                battery_charge_power_w: 500,
+                battery_discharge_power_w: 0,
             },
             timestamp: ts + 5000,
         });
         await until(() => adapter.states['analysis.house_power_w']?.val === 3500);
         assert.equal(adapter.states['analysis.cost_now_per_h'].val, 0.3);
         assert.equal(adapter.states['analysis.today.date'].val.length, 10);
-        assert.match(adapter.states['analysis.battery_status_text'].val, /^full in /, 'English without system language');
+        assert.match(
+            adapter.states['analysis.battery_status_text'].val,
+            /^full in /,
+            'English without system language',
+        );
 
         // a duplicate changes nothing
         adapter.states['butler.battery_soc_percent'] = 'unchanged';
-        await publish('energy/butler/telemetry', { name: 'butler', fields: { battery_soc_percent: 99 }, timestamp: ts });
-        await publish('energy/heatpump/telemetry', { name: 'heatpump', fields: { cop: 4.2, new_counter_kwh: 7 }, timestamp: ts });
+        await publish('energy/butler/telemetry', {
+            name: 'butler',
+            fields: { battery_soc_percent: 99 },
+            timestamp: ts,
+        });
+        await publish('energy/heatpump/telemetry', {
+            name: 'heatpump',
+            fields: { cop: 4.2, new_counter_kwh: 7 },
+            timestamp: ts,
+        });
         await until(() => adapter.states['heatpump.cop']);
         assert.equal(adapter.states['butler.battery_soc_percent'], 'unchanged');
         assert.equal(adapter.states['heatpump.cop'].val, 4.2);
@@ -196,7 +218,10 @@ test('mtecmqtt: single plain text values become one record per loop', async () =
     await bridge.start();
     try {
         const [subscriptions] = await subscribed;
-        assert.deepEqual(subscriptions.map(s => [s.topic, s.qos]), [['MTEC/+/#', 0]]);
+        assert.deepEqual(
+            subscriptions.map(s => [s.topic, s.qos]),
+            [['MTEC/+/#', 0]],
+        );
         assert.equal(adapter.objects['heatpump.cop'], undefined, 'no heat pump configured');
         assert.equal(adapter.objects['butler.info.serial'].common.role, 'info.serial');
         await until(() => adapter.states['info.connection']?.val === true);
@@ -217,7 +242,11 @@ test('mtecmqtt: single plain text values become one record per loop', async () =
         assert.equal(adapter.states['butler.battery_charge_power_w'].val, 1036);
         assert.equal(adapter.states['butler.grid_phase_c_power_signed_w'].val, -218);
         assert.equal(adapter.states['butler.pv1_power_w'], undefined, 'now-pv has not been sent yet');
-        assert.equal(adapter.states['butler.pv_total_power_w'].val, 2300, 'the foreign serial number did not overwrite');
+        assert.equal(
+            adapter.states['butler.pv_total_power_w'].val,
+            2300,
+            'the foreign serial number did not overwrite',
+        );
         const ts = adapter.states['butler.info.lastMeasurement'].val;
         assert.ok(ts >= start && ts <= Date.now(), 'time of receipt');
         assert.equal(adapter.states['butler.info.stale'].val, false);
@@ -261,10 +290,16 @@ test('mtecmqtt: daily counters replace the estimate', async () => {
     await bridge.stop();
 });
 
-test('renamed data points: today\'s values are taken over, old objects deleted', async () => {
+test("renamed data points: today's values are taken over, old objects deleted", async () => {
     const adapter = fakeAdapter();
     const today = dayKey(Date.now());
-    const old = ['analysis.cost_now_eur_h', 'analysis.savings_now_eur_h', 'analysis.grid_balance_eur_h', 'analysis.today.cost_eur', 'analysis.today.savings_eur'];
+    const old = [
+        'analysis.cost_now_eur_h',
+        'analysis.savings_now_eur_h',
+        'analysis.grid_balance_eur_h',
+        'analysis.today.cost_eur',
+        'analysis.today.savings_eur',
+    ];
     for (const id of old) {
         adapter.objects[id] = { type: 'state', common: {}, native: {} };
     }

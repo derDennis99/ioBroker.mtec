@@ -12,7 +12,9 @@
       "label": "Broker (IP address or host name)",
       "xs": 12,
       "sm": 8,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 4
     },
     "port": {
       "type": "number",
@@ -21,7 +23,9 @@
       "max": 65535,
       "xs": 12,
       "sm": 4,
-      "md": 2
+      "md": 2,
+      "lg": 2,
+      "xl": 2
     },
     "username": {
       "newLine": true,
@@ -29,7 +33,9 @@
       "label": "User",
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "password": {
       "type": "password",
@@ -38,7 +44,9 @@
       "visible": true,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "_source": {
       "newLine": true,
@@ -52,12 +60,20 @@
       "help": "profile_help",
       "default": "json",
       "options": [
-        { "label": "JSON (fields + timestamp)", "value": "json" },
-        { "label": "MTECmqtt (Energy Butler only)", "value": "mtecmqtt" }
+        {
+          "label": "JSON profile (fields + timestamp)",
+          "value": "json"
+        },
+        {
+          "label": "MTECmqtt (Energy Butler only)",
+          "value": "mtecmqtt"
+        }
       ],
       "xs": 12,
       "sm": 12,
-      "md": 8
+      "md": 8,
+      "lg": 6,
+      "xl": 6
     },
     "topicHeatpump": {
       "newLine": true,
@@ -66,7 +82,9 @@
       "help": "Empty = no heat pump",
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "topicButler": {
       "type": "text",
@@ -75,7 +93,9 @@
       "hidden": "data.profile === 'mtecmqtt'",
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "mtecTopicPrefix": {
       "newLine": true,
@@ -85,7 +105,9 @@
       "hidden": "data.profile !== 'mtecmqtt'",
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "mtecSerial": {
       "type": "text",
@@ -94,7 +116,9 @@
       "hidden": "data.profile !== 'mtecmqtt'",
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "staleSeconds": {
       "newLine": true,
@@ -105,7 +129,9 @@
       "max": 3600,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "staleSecondsSlow": {
       "type": "number",
@@ -116,7 +142,9 @@
       "max": 3600,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "_analysis": {
       "newLine": true,
@@ -132,7 +160,9 @@
       "step": 0.1,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "batteryMinSoc": {
       "type": "number",
@@ -141,7 +171,9 @@
       "max": 100,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "priceImportCt": {
       "newLine": true,
@@ -153,7 +185,9 @@
       "step": 0.01,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "priceExportCt": {
       "type": "number",
@@ -164,7 +198,9 @@
       "step": 0.01,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "currency": {
       "type": "text",
@@ -173,7 +209,9 @@
       "maxLength": 6,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     },
     "surplusThresholdW": {
       "newLine": true,
@@ -183,7 +221,9 @@
       "max": 20000,
       "xs": 12,
       "sm": 6,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 3
     }
   }
 }

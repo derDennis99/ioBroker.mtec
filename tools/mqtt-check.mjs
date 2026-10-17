@@ -23,7 +23,9 @@ const { values: args } = parseArgs({
 });
 
 if (!args.host) {
-    console.error('Please name the broker: node tools/mqtt-check.mjs --host <broker> [--port 1883] [--user <user>] [--seconds 15]');
+    console.error(
+        'Please name the broker: node tools/mqtt-check.mjs --host <broker> [--port 1883] [--user <user>] [--seconds 15]',
+    );
     process.exit(2);
 }
 
@@ -32,9 +34,15 @@ const TOPICS = {
     'energy/butler/telemetry': 'butler',
 };
 
-const seen = Object.fromEntries(Object.keys(TOPICS).map(t => [t, { count: 0, invalid: 0, fields: new Map(), ages: [], last: null }]));
+const seen = Object.fromEntries(
+    Object.keys(TOPICS).map(t => [t, { count: 0, invalid: 0, fields: new Map(), ages: [], last: null }]),
+);
 
-/** Reads an input without showing it. */
+/**
+ * Reads an input without showing it.
+ *
+ * @param question
+ */
 function askHidden(question) {
     return new Promise(resolve => {
         const stdin = process.stdin;
@@ -169,7 +177,8 @@ function report() {
         const minAge = Math.min(...ages);
         let clockNote = '';
         if (minAge < -60) {
-            clockNote = '  ⚠ timestamps more than 60 s in the future – the adapter discards these messages, check the clocks';
+            clockNote =
+                '  ⚠ timestamps more than 60 s in the future – the adapter discards these messages, check the clocks';
         } else if (minAge < -10) {
             clockNote = '  ⚠ timestamps clearly in the future – check the clocks';
         } else if (minAge < -1) {
@@ -178,7 +187,9 @@ function report() {
         console.log(`Age on receipt: min ${minAge.toFixed(1)} s, max ${Math.max(...ages).toFixed(1)} s${clockNote}`);
         const missing = known.filter(f => !s.fields.has(f));
         const unknown = [...s.fields.keys()].filter(f => !known.includes(f));
-        const nonNumeric = [...s.fields].filter(([, t]) => [...t].some(x => x !== 'number')).map(([f, t]) => `${f} (${[...t].join('/')})`);
+        const nonNumeric = [...s.fields]
+            .filter(([, t]) => [...t].some(x => x !== 'number'))
+            .map(([f, t]) => `${f} (${[...t].join('/')})`);
         console.log(`Fields: ${s.fields.size} received, ${known.length} expected`);
         if (missing.length) {
             console.log(`  never sent: ${missing.join(', ')}`);

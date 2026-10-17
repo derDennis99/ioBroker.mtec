@@ -6,10 +6,21 @@ const require = createRequire(import.meta.url);
 const { Analysis, analysisOptions, analysisStates, dayKey, money } = require('../lib/analysis.js');
 
 const T0 = new Date(2026, 9, 17, 12, 0, 0).getTime(); // 17 Oct 2026 12:00 local time
-const opts = (o = {}) => ({ capacityKwh: 15, minSocPercent: 10, priceImport: null, priceExport: null, surplusThresholdW: 1000, ...o });
+const opts = (o = {}) => ({
+    capacityKwh: 15,
+    minSocPercent: 10,
+    priceImport: null,
+    priceExport: null,
+    surplusThresholdW: 1000,
+    ...o,
+});
 const butler = (pv, imp, exp, chg, dis, soc = 50) => ({
-    pv_total_power_w: pv, grid_import_power_w: imp, grid_export_power_w: exp,
-    battery_charge_power_w: chg, battery_discharge_power_w: dis, battery_soc_percent: soc,
+    pv_total_power_w: pv,
+    grid_import_power_w: imp,
+    grid_export_power_w: exp,
+    battery_charge_power_w: chg,
+    battery_discharge_power_w: dis,
+    battery_soc_percent: soc,
 });
 
 test('house consumption while the battery charges from the grid (real values of 17 Oct)', () => {
@@ -129,8 +140,18 @@ test('incomplete message: no calculated values, no extrapolation', () => {
 });
 
 test('settings: prices in cents, 0 = not set', () => {
-    assert.deepEqual(analysisOptions({ batteryCapacityKwh: 15, batteryMinSoc: 10, priceImportCt: 32.5, priceExportCt: 0 }),
-        { capacityKwh: 15, minSocPercent: 10, priceImport: 0.325, priceExport: null, surplusThresholdW: 1000, currency: '€', language: 'en' });
+    assert.deepEqual(
+        analysisOptions({ batteryCapacityKwh: 15, batteryMinSoc: 10, priceImportCt: 32.5, priceExportCt: 0 }),
+        {
+            capacityKwh: 15,
+            minSocPercent: 10,
+            priceImport: 0.325,
+            priceExport: null,
+            surplusThresholdW: 1000,
+            currency: '€',
+            language: 'en',
+        },
+    );
     assert.equal(analysisOptions({ language: 'de' }).language, 'de');
     assert.equal(analysisOptions({ language: 'fr' }).language, 'en');
 });
@@ -161,7 +182,10 @@ test('currency: units, names and default', () => {
     const d = analysisStates('CHF');
     assert.equal(d.cost_now_per_h.unit, 'CHF/h');
     assert.equal(d['today.cost'].unit, 'CHF');
-    assert.deepEqual(d.grid_balance_text.name, { en: 'Grid balance now as text, e.g. "+0.27 CHF/h"', de: 'Netz-Bilanz jetzt als Text, z. B. "+0,27 CHF/h"' });
+    assert.deepEqual(d.grid_balance_text.name, {
+        en: 'Grid balance now as text, e.g. "+0.27 CHF/h"',
+        de: 'Netz-Bilanz jetzt als Text, z. B. "+0,27 CHF/h"',
+    });
     assert.equal(d.house_power_w.unit, 'W');
     assert.equal(analysisOptions({}).currency, '€');
     assert.equal(analysisOptions({ currency: ' CHF ' }).currency, 'CHF');
@@ -182,7 +206,13 @@ test('texts in English (default)', () => {
     assert.equal(c.butler(butler(0, 300, 0, 20, 0, 60), T0 + 10000).now.battery_status_text, 'idle');
 });
 
-const COUNTERS = { pv_kwh: 6.7, grid_import_kwh: 4.3, grid_export_kwh: 0.5, battery_charge_kwh: 2.1, battery_discharge_kwh: 1.5 };
+const COUNTERS = {
+    pv_kwh: 6.7,
+    grid_import_kwh: 4.3,
+    grid_export_kwh: 0.5,
+    battery_charge_kwh: 2.1,
+    battery_discharge_kwh: 1.5,
+};
 
 test('daily counters replace the estimate, the estimate continues from there', () => {
     const a = new Analysis(opts({ priceImport: 0.3, priceExport: 0.08 }));
@@ -200,8 +230,8 @@ test('daily counters replace the estimate, the estimate continues from there', (
     assert.equal(t['today.autarky_percent'], 56.6);
     // the next measurement only adds the 32 s since the counter reading
     const r = a.butler(butler(1000, 2000, 0, 0, 0), T0 + 72_000);
-    assert.equal(r.today['today.pv_kwh'], round2(6.7 + 1 * 32 / 3600));
-    assert.equal(r.today['today.grid_import_kwh'], round2(4.3 + 2 * 32 / 3600));
+    assert.equal(r.today['today.pv_kwh'], round2(6.7 + (1 * 32) / 3600));
+    assert.equal(r.today['today.grid_import_kwh'], round2(4.3 + (2 * 32) / 3600));
 });
 
 test('daily counters: partial readings and invalid values', () => {
@@ -215,7 +245,7 @@ test('daily counters: partial readings and invalid values', () => {
     assert.equal(t['today.house_kwh'], 0.03, 'house only from all five counters');
 });
 
-test('daily counters after midnight: yesterday\'s totals are not taken over', () => {
+test("daily counters after midnight: yesterday's totals are not taken over", () => {
     const a = new Analysis(opts());
     a.counters(COUNTERS, new Date(2026, 9, 17, 23, 58).getTime());
     const after = new Date(2026, 9, 18, 0, 3).getTime();
@@ -225,7 +255,10 @@ test('daily counters after midnight: yesterday\'s totals are not taken over', ()
     assert.equal(t['today.pv_kwh'], 0);
     assert.equal(t['today.grid_import_kwh'], 0);
     // reset values are accepted
-    t = a.counters({ pv_kwh: 0, grid_import_kwh: 0.1, grid_export_kwh: 0, battery_charge_kwh: 0, battery_discharge_kwh: 0.2 }, after + 300_000);
+    t = a.counters(
+        { pv_kwh: 0, grid_import_kwh: 0.1, grid_export_kwh: 0, battery_charge_kwh: 0, battery_discharge_kwh: 0.2 },
+        after + 300_000,
+    );
     assert.equal(t['today.grid_import_kwh'], 0.1);
     assert.equal(t['today.battery_discharge_kwh'], 0.2);
     assert.equal(t['today.house_kwh'], 0.3);
