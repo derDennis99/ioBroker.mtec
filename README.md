@@ -239,6 +239,7 @@ Changelog und Lizenz stehen unten auf Englisch.
 - Public description of the `json` format
 - (breaking) Requires Node.js 22, js-controller 6.0.11 and admin 7.6.20 or newer
 - Admin interface and adapter description in all ioBroker languages
+- New adapter icon
 
 ### 0.3.0 (2026-10-17)
 
