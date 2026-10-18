@@ -7,6 +7,7 @@ import { ROUNDS, SERIAL } from './fixtures/mtecmqtt.mjs';
 const require = createRequire(import.meta.url);
 const { MtecmqttSource, guessUnit, parseValue, groupFields } = require('../lib/profiles/mtecmqtt.js');
 const { Q_SENSOR_NOT_REPORTED } = require('../lib/profiles/json.js');
+const { t } = require('../lib/fields.js');
 
 const T0 = 1_791_956_345_000;
 
@@ -87,7 +88,7 @@ test('one now-base loop becomes one record with our field names', () => {
         val: '2026-10-17 12:00:00',
         common: { name: 'MTECmqtt now-base/api_date', type: 'string', role: 'text', read: true, write: false },
         channels: [
-            { id: 'butler.mtecmqtt', name: { en: 'Further values from MTECmqtt', de: 'Weitere Werte von MTECmqtt' } },
+            { id: 'butler.mtecmqtt', name: t('Further values from MTECmqtt', 'Weitere Werte von MTECmqtt') },
             { id: 'butler.mtecmqtt.now_base', name: 'now-base' },
         ],
     });

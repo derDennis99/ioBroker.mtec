@@ -117,10 +117,9 @@ test('json: creates objects, connects and writes values with the time of measure
     await bridge.start();
     try {
         assert.equal(adapter.objects['heatpump.flow_temperature_c'].common.unit, '°C');
-        assert.deepEqual(adapter.objects['butler.battery_soc_percent'].common.name, {
-            en: 'Battery state of charge',
-            de: 'Batterieladestand',
-        });
+        assert.equal(adapter.objects['butler.battery_soc_percent'].common.name.en, 'Battery state of charge');
+        assert.equal(adapter.objects['butler.battery_soc_percent'].common.name.de, 'Batterieladestand');
+        assert.equal(adapter.objects['butler.battery_soc_percent'].common.name.fr, 'État de charge de la batterie');
         assert.equal(adapter.objects['butler.info.serial'], undefined, 'serial number only with MTECmqtt');
         assert.equal(adapter.states['heatpump.info.stale'].val, true);
 

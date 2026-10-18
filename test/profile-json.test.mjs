@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { DeviceTelemetry, JsonSource, Q_SENSOR_NOT_REPORTED } = require('../lib/profiles/json.js');
 const { createSources } = require('../lib/profiles/index.js');
-const { DEVICES, stateCommon } = require('../lib/fields.js');
+const { DEVICES, stateCommon, t } = require('../lib/fields.js');
 
 const NOW = 1_791_956_345_000;
 const msg = (fields, timestamp = NOW) => JSON.stringify({ name: 'heatpump', fields, timestamp });
@@ -106,7 +106,7 @@ test('stale by age of the measurement', () => {
 test('stateCommon sets type, unit, multilingual name and state texts', () => {
     const f = DEVICES.heatpump.fields;
     assert.deepEqual(stateCommon('flow_temperature_c', f.flow_temperature_c), {
-        name: { en: 'Heat pump flow', de: 'WP-Vorlauf' },
+        name: t('Heat pump flow', 'WP-Vorlauf'),
         type: 'number',
         role: 'value.temperature',
         read: true,

@@ -98,6 +98,10 @@ The tests cover both input profiles, the analysis and the whole path through a l
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- Data point and channel names in all ioBroker languages
+
 ### 0.4.1 (2026-10-18)
 
 - Timers use the adapter API (setInterval/setTimeout of the adapter)

@@ -182,10 +182,12 @@ test('currency: units, names and default', () => {
     const d = analysisStates('CHF');
     assert.equal(d.cost_now_per_h.unit, 'CHF/h');
     assert.equal(d['today.cost'].unit, 'CHF');
-    assert.deepEqual(d.grid_balance_text.name, {
-        en: 'Grid balance now as text, e.g. "+0.27 CHF/h"',
-        de: 'Netz-Bilanz jetzt als Text, z. B. "+0,27 CHF/h"',
-    });
+    assert.equal(d.grid_balance_text.name.en, 'Grid balance now as text, e.g. "+0.27 CHF/h"');
+    assert.equal(d.grid_balance_text.name.de, 'Netz-Bilanz jetzt als Text, z. B. "+0,27 CHF/h"');
+    assert.ok(
+        Object.values(d.grid_balance_text.name).every(v => !v.includes('€')),
+        'currency replaced in all languages',
+    );
     assert.equal(d.house_power_w.unit, 'W');
     assert.equal(analysisOptions({}).currency, '€');
     assert.equal(analysisOptions({ currency: ' CHF ' }).currency, 'CHF');
