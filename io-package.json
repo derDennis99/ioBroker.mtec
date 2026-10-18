@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mtec",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "news": {
+      "0.4.1": {
+        "en": "Timers use the adapter API; German description moved to docs/de/README.md; author contact added",
+        "de": "Timer laufen über die Adapter-API; deutsche Beschreibung nach docs/de/README.md verschoben; Kontakt des Autors ergänzt",
+        "ru": "Таймеры используют API адаптера; описание на немецком перенесено в docs/de/README.md; добавлен контакт автора",
+        "pt": "Os temporizadores usam a API do adaptador; descrição em alemão movida para docs/de/README.md; contacto do autor adicionado",
+        "nl": "Timers gebruiken de adapter-API; Duitse beschrijving verplaatst naar docs/de/README.md; contactgegevens van de auteur toegevoegd",
+        "fr": "Les minuteries utilisent l'API de l'adaptateur ; description allemande déplacée vers docs/de/README.md ; contact de l'auteur ajouté",
+        "it": "I timer usano l'API dell'adattatore; descrizione tedesca spostata in docs/de/README.md; aggiunto il contatto dell'autore",
+        "es": "Los temporizadores usan la API del adaptador; descripción en alemán movida a docs/de/README.md; añadido el contacto del autor",
+        "pl": "Timery korzystają z API adaptera; niemiecki opis przeniesiony do docs/de/README.md; dodano kontakt do autora",
+        "uk": "Таймери використовують API адаптера; німецький опис перенесено до docs/de/README.md; додано контакт автора",
+        "zh-cn": "定时器改用适配器 API；德语说明移至 docs/de/README.md；添加作者联系方式"
+      },
       "0.4.0": {
         "en": "Breaking: money data points renamed (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), today's values are migrated. New input profile MTECmqtt (Energy Butler). English base language, all ioBroker languages, new icon. Requires Node.js 22, js-controller 6.0.11 and admin 7.6.20",
         "de": "Breaking: Geld-Datenpunkte umbenannt (*_eur_h → *_per_h, today.cost_eur → today.cost, today.savings_eur → today.savings), die heutigen Werte werden übernommen. Neues Eingangsprofil MTECmqtt (Energy Butler). Englisch als Basissprache, alle ioBroker-Sprachen, neues Icon. Benötigt Node.js 22, js-controller 6.0.11 und Admin 7.6.20",

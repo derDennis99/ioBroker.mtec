@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mtec",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "M-TEC Energy Butler and heat pump data from MQTT (JSON or MTECmqtt) for ioBroker, with energy analysis",
   "author": "derDennis99 <mc@nucs.eu>",
   "license": "MIT",
