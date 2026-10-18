@@ -44,7 +44,7 @@
       "zh-cn": "从 MQTT 代理（JSON 或 MTECmqtt）读取 M-TEC Energy Butler 和热泵的数据并进行分析"
     },
     "authors": [
-      "derDennis99"
+      "derDennis99 <mc@nucs.eu>"
     ],
     "keywords": [
       "m-tec",

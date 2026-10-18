@@ -69,6 +69,10 @@ function fakeAdapter() {
         async setObjectNotExistsAsync(id, obj) {
             objects[id] ??= obj;
         },
+        setInterval: (cb, ms) => setInterval(cb, ms),
+        clearInterval: timer => clearInterval(timer),
+        setTimeout: (cb, ms) => setTimeout(cb, ms),
+        clearTimeout: timer => clearTimeout(timer),
     };
 }
 

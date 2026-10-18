@@ -6,7 +6,7 @@ The adapter only reads. It never writes anything back to the devices.
 
 > This adapter is a private community project. It is **not affiliated with, endorsed or supported by M-TEC**. All product names belong to their owners.
 
-[Deutsche Beschreibung weiter unten](#deutsch)
+German description: [docs/de/README.md](docs/de/README.md)
 
 ## Data sources
 
@@ -25,25 +25,7 @@ Direct access via Modbus (without extra software) is planned for a later version
 
 Requirements: Node.js 22 or newer, js-controller 6.0.11 or newer, admin 7.6.20 or newer.
 
-The adapter is not yet published on npm. To test it, build the package and install it on the ioBroker host (default installation in `/opt/iobroker`):
-
-```bash
-npm pack
-```
-
-On the ioBroker host:
-
-```bash
-sudo mkdir -p /opt/iobroker/local-adapters
-sudo mv iobroker.mtec-<version>.tgz /opt/iobroker/local-adapters/
-sudo chown -R iobroker:iobroker /opt/iobroker/local-adapters
-cd /opt/iobroker
-sudo -u iobroker -H npm install ./local-adapters/iobroker.mtec-<version>.tgz --omit=dev
-iobroker upload mtec
-iobroker add mtec
-```
-
-The package has to stay in `local-adapters`: npm records the path in `/opt/iobroker/package.json`, and updates of other adapters fail if the file is missing later.
+The adapter is published on npm and is being added to the ioBroker repository. As soon as it is listed there, search for "mtec" in the adapter list of the admin, install it and create an instance.
 
 ## Configuration
 
@@ -110,126 +92,18 @@ npm test
 
 The tests cover both input profiles, the analysis and the whole path through a local MQTT broker (aedes). `npm run test:integration` additionally starts the adapter in a real js-controller and checks the data flow from a local broker, `npm run lint` checks the code style.
 
-## Deutsch
-
-Der Adapter liest einen M-TEC **Energy Butler** (Hybrid-Wechselrichter mit PV und Akku) und eine M-TEC **Wärmepumpe** von einem MQTT-Broker, legt typisierte ioBroker-Datenpunkte an und wertet die Energieflüsse aus: Hausverbrauch, Autarkie, Akku-Prognose, PV-Überschuss, Kosten, Ersparnis und Tageswerte.
-
-Der Adapter liest nur. Er schreibt nie etwas an die Geräte zurück.
-
-> Dieser Adapter ist ein privates Community-Projekt. Er ist **nicht mit M-TEC verbunden** und wird von M-TEC weder unterstützt noch empfohlen. Alle Produktnamen gehören ihren Inhabern.
-
-### Datenquellen
-
-Der Adapter spricht nicht direkt mit den Geräten. Er liest ihre Werte von einem MQTT-Broker, in einem von zwei Formaten („Eingangsprofile“):
-
-| Profil | Geräte | Quelle |
-|---|---|---|
-| `json` | Energy Butler und Wärmepumpe | Ein Topic je Gerät mit einer JSON-Nachricht aus `fields` und `timestamp`. Jede Quelle kann sie erzeugen, z. B. Node-RED oder ein Skript. [Formatbeschreibung](docs/profile-json.md) (englisch) |
-| `mtecmqtt` | Energy Butler | Die MQTT-Ausgabe von [MTECmqtt](https://github.com/croedel/MTECmqtt). [Details und Zuordnung](docs/profile-mtecmqtt.md) (englisch) |
-
-Mit `mtecmqtt` kann die Wärmepumpe gleichzeitig weiter über `json` gelesen werden.
-
-Ein direkter Zugriff über Modbus (ohne Zusatzsoftware) ist für eine spätere Version geplant.
-
-### Installation
-
-Voraussetzungen: Node.js 22 oder neuer, js-controller 6.0.11 oder neuer, Admin 7.6.20 oder neuer.
-
-Der Adapter ist noch nicht auf npm veröffentlicht. Zum Testen das Paket bauen und auf dem ioBroker-Host installieren (Standardinstallation unter `/opt/iobroker`):
-
-```bash
-npm pack
-```
-
-Auf dem ioBroker-Host:
-
-```bash
-sudo mkdir -p /opt/iobroker/local-adapters
-sudo mv iobroker.mtec-<version>.tgz /opt/iobroker/local-adapters/
-sudo chown -R iobroker:iobroker /opt/iobroker/local-adapters
-cd /opt/iobroker
-sudo -u iobroker -H npm install ./local-adapters/iobroker.mtec-<version>.tgz --omit=dev
-iobroker upload mtec
-iobroker add mtec
-```
-
-Das Paket muss in `local-adapters` liegen bleiben: npm trägt den Pfad in `/opt/iobroker/package.json` ein, und Updates anderer Adapter schlagen fehl, wenn die Datei später fehlt.
-
-### Einrichtung
-
-| Einstellung | Bedeutung |
-|---|---|
-| Broker, Port, Benutzer, Passwort | Verbindung zum MQTT-Broker. Das Passwort wird verschlüsselt gespeichert. |
-| Eingangsprofil | `json` oder `mtecmqtt` |
-| Topics (`json`) | Ein Topic je Gerät, leer = Gerät nicht vorhanden |
-| Topic-Präfix, Seriennummer (`mtecmqtt`) | `MQTT_TOPIC` von MTECmqtt (Standard `MTEC`); Seriennummer leer = die erste gesehene |
-| Daten gelten als veraltet nach | Grenze für `info.stale` (Standard 20 s) |
-| Langsame MTECmqtt-Gruppen gelten als veraltet nach | Grenze für Phasen- und PV-String-Werte (Standard 180 s) |
-| Auswertung | Nutzbare Akku-Kapazität, Mindestladestand, Strompreis und Einspeisevergütung (Cent pro kWh, 0 = nicht gesetzt, Werte unter 1 gelten als Währungseinheit pro kWh), Währung, Schwelle für „Sonnenstrom übrig“ |
-
-Läuft alles, ist `mtec.0.info.connection` `true`, die Datenpunkte unter `mtec.0.butler.*` (und `mtec.0.heatpump.*`) füllen sich, und `info.stale` steht auf `false`.
-
-### Datenpunkte
-
-| Pfad | Inhalt |
-|---|---|
-| `info.connection` | Verbindung zum Broker |
-| `heatpump.<feld>` | 25 Werte der Wärmepumpe mit Einheit und Rolle, Statuscodes mit Texten |
-| `butler.<feld>` | 16 Werte des Energy Butlers |
-| `butler.mtecmqtt.<gruppe>.<name>` | Weitere Werte von MTECmqtt (nur Profil `mtecmqtt`) |
-| `<gerät>.info.lastMeasurement` | Zeitpunkt der letzten Messung (ms) |
-| `<gerät>.info.stale` | `true`, wenn die letzte Messung älter ist als die eingestellte Grenze |
-| `butler.info.serial` | Seriennummer (nur Profil `mtecmqtt`) |
-
-- **Messzeitpunkt:** Mit `json` bekommt jeder Wert den Messzeitpunkt aus der Nachricht als `ts`. Verlaufs-Adapter speichern damit die echte Messzeit.
-- **Fehlend ist nicht 0:** Ein nicht gemeldeter Wert wird `null` mit Qualität `0x82` (Sensor hat keinen Wert gemeldet). Ein alter Wert bleibt also nicht stehen.
-- **Für eigene Logik:** Vor einer Schaltentscheidung immer zuerst `info.stale` prüfen.
-
-### Auswertung
-
-Unter `analysis` rechnet der Adapter aus den Live-Werten des Energy Butlers:
-
-| Datenpunkt | Inhalt |
-|---|---|
-| `house_power_w` / `house_without_heatpump_w` | Hausverbrauch jetzt (PV + Bezug + Entladen − Einspeisung − Laden), mit und ohne Wärmepumpe |
-| `autarky_percent` / `self_consumption_percent` | Autarkie und Eigenverbrauch der PV jetzt |
-| `surplus_w` / `surplus_available` | PV-Überschuss (Mittel über 5 min) und „Sonnenstrom übrig“ (mit Hysterese) |
-| `battery_energy_kwh`, `battery_full_in_min`, `battery_empty_in_min`, `battery_status_text` | Akku-Inhalt und Prognose, z. B. „voll in 2 h 15 min (ca. 14:35 Uhr)“ |
-| `cost_now_per_h` / `savings_now_per_h` | Stromkosten und Ersparnis pro Stunde jetzt (nur mit eingetragenem Strompreis) |
-| `grid_balance_per_h` / `grid_balance_text` | Netz-Bilanz jetzt: + Einspeiseerlös / − Bezugskosten pro Stunde, als Zahl und als Text („+0,27 €/h“) |
-| `today.*` | Tageswerte seit Mitternacht: PV, Bezug, Einspeisung, Akku, Haus, Wärmepumpe (Strom, Wärme, COP), Autarkie, `cost`, `savings` |
-
-Geldbeträge haben die eingestellte Währung als Einheit. Die Texte folgen der Systemsprache (Deutsch oder Englisch).
-
-Die Tageswerte werden aus der Leistung hochgerechnet (Leistung × Zeit seit der vorigen Messung, Lücken über 60 s werden ausgelassen) und überstehen einen Neustart am selben Tag. Mit dem Profil `mtecmqtt` ersetzen die echten Tageszähler des Energy Butlers die Hochrechnung.
-
-**Umstieg von 0.3.0:** Die Geld-Datenpunkte heißen jetzt `cost_now_per_h`, `savings_now_per_h`, `grid_balance_per_h`, `today.cost` und `today.savings`. Der Adapter übernimmt die heutigen Werte und löscht die alten Datenpunkte. Skripte und Visualisierungen bitte anpassen.
-
-### Broker prüfen
-
-Für das Profil `json` hört `tools/mqtt-check.mjs` einige Sekunden mit und vergleicht die Felder mit den Definitionen des Adapters. Mit `--user` fragt es nach dem Passwort (verdeckte Eingabe, alternativ aus `MQTT_PASSWORD`):
-
-```bash
-node tools/mqtt-check.mjs --host <broker> --user <benutzer>
-```
-
-### Entwicklung
-
-```bash
-npm install
-npm test
-```
-
-Die Tests prüfen beide Eingangsprofile, die Auswertung und den ganzen Weg über einen lokalen MQTT-Broker (aedes). `npm run test:integration` startet den Adapter zusätzlich in einem echten js-controller und prüft den Datenfluss von einem lokalen Broker, `npm run lint` prüft den Code-Stil.
-
-Changelog und Lizenz stehen unten auf Englisch.
-
 ## Changelog
 
 <!--
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- Timers use the adapter API (setInterval/setTimeout of the adapter)
+- German description moved to docs/de/README.md
+- Author contact added
+
 ### 0.4.0 (2026-10-17)
 
 - (breaking) Money data points renamed: `analysis.cost_now_eur_h` → `cost_now_per_h`, `savings_now_eur_h` → `savings_now_per_h`, `grid_balance_eur_h` → `grid_balance_per_h`, `today.cost_eur` → `today.cost`, `today.savings_eur` → `today.savings`. Today's values are taken over, the old objects are deleted.
@@ -261,7 +135,7 @@ Changelog und Lizenz stehen unten auf Englisch.
 
 MIT License
 
-Copyright (c) 2026 derDennis99
+Copyright (c) 2026 derDennis99 <mc@nucs.eu>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
