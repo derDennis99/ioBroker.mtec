@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mtec",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "news": {
+      "0.4.2": {
+        "en": "Data point and channel names in all ioBroker languages",
+        "de": "Namen der Datenpunkte und Kanäle in allen ioBroker-Sprachen",
+        "ru": "Названия точек данных и каналов на всех языках ioBroker",
+        "pt": "Nomes dos pontos de dados e canais em todos os idiomas do ioBroker",
+        "nl": "Namen van datapunten en kanalen in alle ioBroker-talen",
+        "fr": "Noms des points de données et des canaux dans toutes les langues ioBroker",
+        "it": "Nomi dei punti dati e dei canali in tutte le lingue di ioBroker",
+        "es": "Nombres de los puntos de datos y canales en todos los idiomas de ioBroker",
+        "pl": "Nazwy punktów danych i kanałów we wszystkich językach ioBroker",
+        "uk": "Назви точок даних і каналів усіма мовами ioBroker",
+        "zh-cn": "数据点和通道名称支持所有 ioBroker 语言"
+      },
       "0.4.1": {
         "en": "Timers use the adapter API; German description moved to docs/de/README.md; author contact added",
         "de": "Timer laufen über die Adapter-API; deutsche Beschreibung nach docs/de/README.md verschoben; Kontakt des Autors ergänzt",
