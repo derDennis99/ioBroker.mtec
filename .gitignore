@@ -3,3 +3,22 @@ node_modules/
 mtec-test-*.json
 .commitinfo
 .dev-server/
+
+# Claude Code
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/settings.json
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and test output
+*.log
+coverage/
+.nyc_output/

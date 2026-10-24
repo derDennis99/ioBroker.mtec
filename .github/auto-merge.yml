@@ -1,0 +1,10 @@
+# Rules for .github/workflows/automerge-dependabot.yml
+# Everything else (e.g. major updates) needs a manual review.
+- match:
+    # patch updates of runtime dependencies
+    dependency_type: production
+    update_type: "semver:patch"
+- match:
+    # patch and minor updates of development dependencies
+    dependency_type: development
+    update_type: "semver:minor"

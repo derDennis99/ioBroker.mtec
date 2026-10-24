@@ -50,7 +50,7 @@ tests.integration(path.join(__dirname, '..'), {
                 server = net.createServer(broker.handle);
                 server.listen(0, '127.0.0.1');
                 await once(server, 'listening');
-                port = server.address().port;
+                port = /** @type {import('node:net').AddressInfo} */ (server.address()).port;
             });
 
             after(async () => {
@@ -74,18 +74,19 @@ tests.integration(path.join(__dirname, '..'), {
                     },
                     timestamp: Date.now(),
                 };
-                await new Promise((resolve, reject) =>
-                    broker.publish(
-                        {
-                            topic: 'energy/butler/telemetry',
-                            payload: Buffer.from(JSON.stringify(body)),
-                            qos: 1,
-                            retain: true,
-                            cmd: 'publish',
-                            dup: false,
-                        },
-                        e => (e ? reject(e) : resolve()),
-                    ),
+                await new Promise(
+                    /** @param {(value?: void) => void} resolve */ (resolve, reject) =>
+                        broker.publish(
+                            {
+                                topic: 'energy/butler/telemetry',
+                                payload: Buffer.from(JSON.stringify(body)),
+                                qos: 1,
+                                retain: true,
+                                cmd: 'publish',
+                                dup: false,
+                            },
+                            e => (e ? reject(e) : resolve()),
+                        ),
                 );
 
                 await harness.changeAdapterConfig('mtec', {

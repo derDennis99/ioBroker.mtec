@@ -1,0 +1,21 @@
+// Root tsconfig: type checking of the JavaScript sources (npm run check), nothing is compiled
+{
+    // To update the target, install a different version of @tsconfig/node... and reference it here
+    "extends": "@tsconfig/node22/tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true,
+
+        // check JS files
+        "allowJs": true,
+        "checkJs": true,
+
+        // necessary for the automatic typing of the adapter config
+        "resolveJsonModule": true,
+
+        "noImplicitAny": false,
+        "useUnknownInCatchVariables": false,
+        "types": ["@iobroker/types", "node", "mocha"]
+    },
+    "include": ["main.js", "lib/**/*.js", "test/**/*.js", "**/*.d.ts"],
+    "exclude": ["node_modules/**"]
+}

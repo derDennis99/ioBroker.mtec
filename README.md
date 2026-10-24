@@ -90,7 +90,7 @@ npm install
 npm test
 ```
 
-The tests cover both input profiles, the analysis and the whole path through a local MQTT broker (aedes). `npm run test:integration` additionally starts the adapter in a real js-controller and checks the data flow from a local broker, `npm run lint` checks the code style.
+The tests cover both input profiles, the analysis and the whole path through a local MQTT broker (aedes). `npm run test:integration` additionally starts the adapter in a real js-controller and checks the data flow from a local broker, `npm run lint` checks the code style and `npm run check` the types (TypeScript on the JavaScript sources).
 
 ## Changelog
 
@@ -98,6 +98,10 @@ The tests cover both input profiles, the analysis and the whole path through a l
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- (dev) Type checking of the sources (`npm run check`, also in CI), VS Code schema settings, automerge for Dependabot updates, older changelog entries moved to CHANGELOG_OLD.md
+
 ### 0.4.2 (2026-10-18)
 
 - Data point and channel names in all ioBroker languages
@@ -127,13 +131,7 @@ The tests cover both input profiles, the analysis and the whole path through a l
 
 - Prices below 1 are read as currency units per kWh; clearer labels
 
-### 0.2.0 (2026-10-17)
-
-- Analysis: house consumption, self-sufficiency, battery forecast, cost/savings, daily values
-
-### 0.1.0 (2026-10-15)
-
-- Initial version: read heat pump and Energy Butler telemetry via MQTT
+Older changes: [CHANGELOG_OLD.md](CHANGELOG_OLD.md)
 
 ## License
 
