@@ -7,7 +7,7 @@ The heat pump is not part of MTECmqtt. You can still read it with the [`json` pr
 ## Setup
 
 1. Run MTECmqtt and let it publish to your broker.
-2. In the instance settings choose the input profile **MTECmqtt** and enter the same broker.
+2. In the instance settings choose **MTECmqtt** as the data source of the Energy Butler and enter the same broker.
 3. **Topic prefix:** the value of `MQTT_TOPIC` in the MTECmqtt configuration (default `MTEC`).
 4. **Serial number:** optional. Empty means the adapter uses the first serial number it sees and shows it in `butler.info.serial`. With several Energy Butlers use one instance per device and enter the serial number in each.
 
@@ -43,7 +43,7 @@ The adapter subscribes to `<prefix>/<serial or +>/#` with QoS 0. Home Assistant 
 
 ¹ The signs follow from MTECmqtt's documentation and formulas. They still need to be confirmed with real data – feedback in the forum or as a GitHub issue is very welcome.
 
-**All other values** (voltages, currents, frequencies, temperatures, battery SOH, backup values, operation mode, energy counters, serial number, firmware version …) are kept as `butler.mtecmqtt.<group>.<name>`, for example `butler.mtecmqtt.now_base.battery_voltage` or `butler.mtecmqtt.total.pv_total`. Numbers become number data points, everything else text. Units are added where MTECmqtt's naming makes them clear (V, A, Hz, °C, W, kWh, %).
+**All other values** (voltages, currents, frequencies, temperatures, battery SOH, backup values, operation mode, energy counters, serial number, firmware version …) are kept as `butler.mtecmqtt.<group>.<name>`, for example `butler.mtecmqtt.now_base.battery_voltage` or `butler.mtecmqtt.total.pv_total`. Group and name become lowercase, characters other than letters, digits and `_` become `_`. Numbers become number data points, everything else text. Units are added where MTECmqtt's naming makes them clear (V, A, Hz, °C, W, kWh, %).
 
 ## Daily values from the energy counters
 

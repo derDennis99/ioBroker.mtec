@@ -4,20 +4,22 @@ Reads an M-TEC **Energy Butler** (hybrid inverter with PV and battery) and an M-
 
 The adapter only reads. It never writes anything back to the devices.
 
+Manufacturer: [M-TEC Systems](https://www.mtec-systems.com/en/) ([Energy-Butler](https://www.mtec-systems.com/en/products/energy-butler/), [heat pumps](https://www.mtec-systems.com/en/heat-pumps/))
+
 > This adapter is a private community project. It is **not affiliated with, endorsed or supported by M-TEC**. All product names belong to their owners.
 
 German description: [docs/de/README.md](docs/de/README.md)
 
 ## Data sources
 
-The adapter does not talk to the devices directly. It reads their values from an MQTT broker, in one of two formats ("input profiles"):
+The adapter does not talk to the devices directly. It reads their values from an MQTT broker, in one of two formats ("input profiles"). The data source is chosen per device:
 
 | Profile | Devices | Source |
 |---|---|---|
 | `json` | Energy Butler and heat pump | One topic per device with a JSON message of `fields` and `timestamp`. Any source can produce it, for example Node-RED or a script. [Format description](docs/profile-json.md) |
 | `mtecmqtt` | Energy Butler | The MQTT output of [MTECmqtt](https://github.com/croedel/MTECmqtt). [Details and mapping](docs/profile-mtecmqtt.md) |
 
-With `mtecmqtt` the heat pump can still be read via `json` at the same time.
+For example, the Energy Butler can come via `mtecmqtt` and the heat pump via `json` at the same time.
 
 Direct access via Modbus (without extra software) is planned for a later version.
 
@@ -31,13 +33,15 @@ The adapter is published on npm and is being added to the ioBroker repository. A
 
 | Setting | Meaning |
 |---|---|
-| Broker, port, user, password | Connection to the MQTT broker. The password is stored encrypted. |
-| Input profile | `json` or `mtecmqtt` |
-| Topics (`json`) | One topic per device, empty = device not present |
+| Energy Butler, heat pump | Data source per device: `json`, `mtecmqtt` (Energy Butler only) or "not present" |
+| Topics (`json`) | One topic per device |
 | Topic prefix, serial number (`mtecmqtt`) | `MQTT_TOPIC` of MTECmqtt (default `MTEC`); serial number empty = first one seen |
 | Data counts as outdated after | Limit for `info.stale` (default 20 s) |
 | Slow MTECmqtt groups count as outdated after | Limit for phase and PV string values (default 180 s) |
+| Broker, port, user, password | Connection to the MQTT broker, only needed for `json` and `mtecmqtt`. The password is stored encrypted. |
 | Analysis | Usable battery capacity, minimum state of charge, grid price and feed-in tariff (cents per kWh, 0 = not set, values below 1 are read as currency units per kWh), currency, threshold for "solar power to spare" |
+
+Settings of version 0.4 and older (one input profile for both devices) are taken over automatically on the first start, the instance restarts once.
 
 If everything works, `mtec.0.info.connection` is `true`, the data points below `mtec.0.butler.*` (and `mtec.0.heatpump.*`) fill up and `info.stale` is `false`.
 
@@ -45,10 +49,11 @@ If everything works, `mtec.0.info.connection` is `true`, the data points below `
 
 | Path | Content |
 |---|---|
-| `info.connection` | Connection to the broker |
+| `info.connection` | `true` if all configured data sources are connected |
 | `heatpump.<field>` | 25 values of the heat pump with unit and role, status codes with texts |
 | `butler.<field>` | 16 values of the Energy Butler |
 | `butler.mtecmqtt.<group>.<name>` | Further values from MTECmqtt (profile `mtecmqtt` only) |
+| `<device>.info.connection` | Connection of the device's data source (with `json` and `mtecmqtt`: the broker) |
 | `<device>.info.lastMeasurement` | Time of the last measurement (ms) |
 | `<device>.info.stale` | `true` if the last measurement is older than the configured limit |
 | `butler.info.serial` | Serial number (profile `mtecmqtt` only) |
@@ -100,6 +105,11 @@ The tests cover both input profiles, the analysis and the whole path through a l
 -->
 ### **WORK IN PROGRESS**
 
+- Data source per device (`butlerSource`, `heatpumpSource`, also "not present"), the MQTT broker is only needed for MQTT sources. Existing settings are taken over automatically.
+- New data points `butler.info.connection` and `heatpump.info.connection`; `info.connection` is `true` if all configured data sources are connected
+- Profile `json`: new fields are only created if their name consists of a-z, 0-9 and _ (starting with a letter, not `info` or `mtecmqtt`); other names are ignored with a warning, so a message can no longer create IDs with dots or overwrite `<device>.info.*`
+- Profile `mtecmqtt`: IDs below `butler.mtecmqtt` are always lowercase
+- Link to the manufacturer in the README
 - (dev) Type checking of the sources (`npm run check`, also in CI), VS Code schema settings, automerge for Dependabot updates, older changelog entries moved to CHANGELOG_OLD.md
 
 ### 0.4.2 (2026-10-18)

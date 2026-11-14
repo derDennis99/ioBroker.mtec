@@ -11,6 +11,8 @@ const require = createRequire(import.meta.url);
 const mqtt = require('mqtt');
 const { Bridge } = require('../lib/bridge.js');
 const { dayKey } = require('../lib/analysis.js');
+const { JsonSource } = require('../lib/profiles/json.js');
+const { DEVICES } = require('../lib/fields.js');
 
 let broker;
 let server;
@@ -37,15 +39,19 @@ function fakeAdapter() {
     const states = {};
     const objects = {};
     const logs = [];
+    /** every write of setStateAsync: [id, val] */
+    const history = [];
     const log = level => m => logs.push(`${level}: ${m}`);
     return {
         namespace: 'mtec.0',
         states,
         objects,
         logs,
+        history,
         log: { debug: log('debug'), info: log('info'), warn: log('warn'), error: log('error') },
         async setStateAsync(id, state, ack) {
             states[id] = typeof state === 'object' && state !== null ? state : { val: state, ack };
+            history.push([id, states[id].val]);
         },
         async setStateChangedAsync(id, state, ack) {
             const next = typeof state === 'object' && state !== null ? state : { val: state, ack };
@@ -81,6 +87,8 @@ const config = (password, extra = {}) => ({
     port,
     username: 'reader',
     password,
+    butlerSource: 'json',
+    heatpumpSource: 'json',
     topicHeatpump: 'energy/heatpump/telemetry',
     topicButler: 'energy/butler/telemetry',
     batteryCapacityKwh: 15,
@@ -129,6 +137,9 @@ test('json: creates objects, connects and writes values with the time of measure
             ['energy/heatpump/telemetry', 1],
         ]);
         await until(() => adapter.states['info.connection']?.val === true);
+        assert.equal(adapter.states['butler.info.connection'].val, true);
+        assert.equal(adapter.states['heatpump.info.connection'].val, true);
+        assert.equal(adapter.objects['butler.info.connection'].common.role, 'indicator.reachable');
 
         const ts = Date.now() - 1000;
         await publish('energy/butler/telemetry', {
@@ -192,6 +203,19 @@ test('json: creates objects, connects and writes values with the time of measure
         assert.equal(adapter.objects['heatpump.new_counter_kwh'].common.type, 'number');
         assert.ok(adapter.logs.some(l => l.includes('new field "new_counter_kwh"')));
 
+        // names that cannot become an ID: warning, nothing created or overwritten
+        await publish('energy/heatpump/telemetry', {
+            name: 'heatpump',
+            fields: { cop: 4.3, 'info.stale': 0, 'a.b': 1 },
+            timestamp: ts + 1000,
+        });
+        await until(() => adapter.states['heatpump.cop'].val === 4.3);
+        assert.ok(adapter.logs.some(l => l.startsWith('warn') && l.includes('field "info.stale" ignored')));
+        assert.equal(adapter.objects['heatpump.a.b'], undefined);
+        assert.ok(
+            !adapter.history.some(([id, val]) => id === 'heatpump.a.b' || (id === 'heatpump.info.stale' && val === 0)),
+        );
+
         // broken message: warning, no crash
         await publish('energy/heatpump/telemetry', '{oops', 0);
         await until(() => adapter.logs.some(l => l.startsWith('warn') && l.includes('not valid JSON')));
@@ -199,6 +223,7 @@ test('json: creates objects, connects and writes values with the time of measure
         await bridge.stop();
     }
     assert.equal(adapter.states['info.connection'].val, false);
+    assert.equal(adapter.states['butler.info.connection'].val, false);
 });
 
 test('wrong password: no connection, error in the log', async () => {
@@ -215,7 +240,12 @@ test('wrong password: no connection, error in the log', async () => {
 
 test('mtecmqtt: single plain text values become one record per loop', async () => {
     const adapter = fakeAdapter();
-    const cfg = config('secret', { profile: 'mtecmqtt', topicHeatpump: '', mtecTopicPrefix: 'MTEC', language: 'de' });
+    const cfg = config('secret', {
+        butlerSource: 'mtecmqtt',
+        heatpumpSource: 'none',
+        mtecTopicPrefix: 'MTEC',
+        language: 'de',
+    });
     const bridge = new Bridge(adapter, cfg, mqtt.connect, { mtecQuietMs: 150 });
     const subscribed = once(broker, 'subscribe');
     await bridge.start();
@@ -269,7 +299,7 @@ test('mtecmqtt: single plain text values become one record per loop', async () =
 
 test('mtecmqtt: daily counters replace the estimate', async () => {
     const adapter = fakeAdapter();
-    const cfg = config('secret', { profile: 'mtecmqtt', topicHeatpump: '', mtecSerial: 'SN0000000001' });
+    const cfg = config('secret', { butlerSource: 'mtecmqtt', heatpumpSource: 'none', mtecSerial: 'SN0000000001' });
     const bridge = new Bridge(adapter, cfg, mqtt.connect);
     await bridge.createObjects();
     assert.equal(adapter.states['butler.info.serial'].val, 'SN0000000001', 'configured serial number');
@@ -331,4 +361,107 @@ test("renamed data points: today's values are taken over, old objects deleted", 
     adapter.logs.length = 0;
     await bridge.migrateRenamedStates();
     assert.equal(adapter.logs.length, 0);
+});
+
+/**
+ * A polled source like the coming modbus and keba profiles: every poll returns the state of charge 50 + n.
+ *
+ * @param {object} [o]
+ * @param {(n: number) => boolean} [o.fail] poll number → fails
+ * @param {number} [o.delayMs] duration of a poll
+ */
+function pollSource({ fail = () => false, delayMs = 0 } = {}) {
+    let lastTs = null;
+    let active = 0;
+    return {
+        profile: 'fake',
+        device: 'butler',
+        intervalMs: 20,
+        staleMs: 20_000,
+        polls: 0,
+        maxActive: 0,
+        closed: false,
+        get lastTs() {
+            return lastTs;
+        },
+        async poll(now) {
+            const n = ++this.polls;
+            this.maxActive = Math.max(this.maxActive, ++active);
+            await new Promise(r => setTimeout(r, delayMs));
+            active--;
+            if (fail(n)) {
+                throw new Error('timeout');
+            }
+            lastTs = now;
+            const updates = [{ field: 'battery_soc_percent', val: 50 + n, q: 0 }];
+            return [{ type: 'record', device: 'butler', ts: now, main: true, updates, unknown: [], rejected: [] }];
+        },
+        close() {
+            this.closed = true;
+        },
+        expire: () => [],
+        isStale(now) {
+            return lastTs === null || now - lastTs > this.staleMs;
+        },
+    };
+}
+
+test('polled source: no MQTT, connection state per poll, one warning per outage', async () => {
+    const adapter = fakeAdapter();
+    const source = pollSource({ fail: n => n === 2 || n === 3 });
+    let connects = 0;
+    const connect = () => {
+        connects++;
+        return null;
+    };
+    const bridge = new Bridge(adapter, { batteryCapacityKwh: 15 }, connect, { sources: [source] });
+    await bridge.start();
+    try {
+        await until(() => adapter.states['butler.battery_soc_percent']?.val === 54);
+        assert.equal(adapter.states['butler.info.connection'].val, true);
+        assert.equal(adapter.states['info.connection'].val, true);
+        assert.equal(adapter.states['butler.info.stale'].val, false);
+        assert.equal(adapter.states['analysis.battery_energy_kwh'].val, 8.1, '54 % of 15 kWh');
+        const connection = adapter.history.filter(([id]) => id === 'butler.info.connection').map(([, v]) => v);
+        assert.deepEqual(connection, [false, true, false, true]);
+        assert.equal(adapter.logs.filter(l => l === 'warn: butler: reading via fake failed (timeout)').length, 1);
+        assert.equal(adapter.logs.filter(l => l === 'debug: butler: reading via fake failed (timeout)').length, 1);
+        assert.ok(adapter.logs.includes('info: butler: reading via fake works again'));
+    } finally {
+        await bridge.stop();
+    }
+    assert.equal(connects, 0, 'no MQTT connection without an MQTT source');
+    assert.equal(source.closed, true);
+    assert.equal(adapter.states['info.connection'].val, false);
+    const polls = source.polls;
+    await new Promise(r => setTimeout(r, 100));
+    assert.equal(source.polls, polls, 'no poll after stop');
+});
+
+test('polled source: the next poll starts only after the previous one', async () => {
+    const adapter = fakeAdapter();
+    const source = pollSource({ delayMs: 50 });
+    const bridge = new Bridge(adapter, {}, () => null, { sources: [source] });
+    await bridge.start();
+    try {
+        await until(() => source.polls >= 3);
+        assert.equal(source.maxActive, 1);
+    } finally {
+        await bridge.stop();
+    }
+});
+
+test('MQTT and polled source: info.connection only if both are connected', async () => {
+    const adapter = fakeAdapter();
+    const heatpump = new JsonSource('heatpump', 'energy/heatpump/telemetry', DEVICES.heatpump.fields, 20_000);
+    const butler = pollSource({ fail: () => true });
+    const bridge = new Bridge(adapter, config('secret'), mqtt.connect, { sources: [heatpump, butler] });
+    await bridge.start();
+    try {
+        await until(() => adapter.states['heatpump.info.connection']?.val === true && butler.polls >= 2);
+        assert.equal(adapter.states['butler.info.connection'].val, false);
+        assert.equal(adapter.states['info.connection'].val, false);
+    } finally {
+        await bridge.stop();
+    }
 });

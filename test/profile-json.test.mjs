@@ -4,7 +4,6 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { DeviceTelemetry, JsonSource, Q_SENSOR_NOT_REPORTED } = require('../lib/profiles/json.js');
-const { createSources } = require('../lib/profiles/index.js');
 const { DEVICES, stateCommon, t } = require('../lib/fields.js');
 
 const NOW = 1_791_956_345_000;
@@ -77,6 +76,19 @@ test('unknown fields are reported and still taken over', () => {
     assert.equal(byField(r).energy_total_kwh.val, 1234.5);
 });
 
+test('new fields whose name cannot become an ID are ignored', () => {
+    const r = hp().process(
+        msg({ 'a.b': 1, Cop: 2, 'x-y': 3, _x: 4, info: 5, mtecmqtt: 6, constructor: 7, cop: 8 }),
+        NOW,
+    );
+    assert.deepEqual(r.ignored, ['a.b', 'Cop', 'x-y', '_x', 'info', 'mtecmqtt']);
+    assert.deepEqual(r.unknown, ['constructor'], 'inherited object properties are not known fields');
+    const u = byField(r);
+    assert.equal(u.constructor.val, 7);
+    assert.equal(u.cop.val, 8);
+    assert.equal(r.ignored.filter(f => Object.hasOwn(u, f)).length, 0);
+});
+
 test('non-numeric values are ignored', () => {
     const r = hp().process(msg({ cop: 'three', thermal_power_w: null }), NOW);
     assert.deepEqual(r.rejected.sort(), ['cop', 'thermal_power_w']);
@@ -131,28 +143,4 @@ test('JsonSource turns messages into records', () => {
     assert.equal(s.lastTs, NOW);
     assert.equal(s.handle('energy/heatpump/telemetry', msg({ cop: 3 }), NOW)[0].type, 'skipped');
     assert.equal(s.handle('energy/heatpump/telemetry', '{oops', NOW)[0].type, 'invalid');
-});
-
-test('createSources: profile json is the default, the heat pump always uses json', () => {
-    const json = createSources({ topicHeatpump: 'hp', topicButler: 'b' });
-    assert.deepEqual(
-        json.map(s => [s.profile, s.device]),
-        [
-            ['json', 'heatpump'],
-            ['json', 'butler'],
-        ],
-    );
-    const mtec = createSources({ profile: 'mtecmqtt', topicHeatpump: 'hp', topicButler: 'b', mtecTopicPrefix: 'MTEC' });
-    assert.deepEqual(
-        mtec.map(s => [s.profile, s.device]),
-        [
-            ['json', 'heatpump'],
-            ['mtecmqtt', 'butler'],
-        ],
-    );
-    assert.deepEqual(
-        createSources({ profile: 'mtecmqtt' }).map(s => s.device),
-        ['butler'],
-    );
-    assert.deepEqual(createSources({ topicHeatpump: ' ', topicButler: '' }), []);
 });

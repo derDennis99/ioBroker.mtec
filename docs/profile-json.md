@@ -6,14 +6,14 @@ The profile is available for both devices: the heat pump and the Energy Butler.
 
 ## Topics
 
-One topic per device, both configurable in the instance settings:
+One topic per device. In the instance settings choose **JSON** as the data source of the device and enter its topic:
 
 | Device | Default topic |
 |---|---|
 | Heat pump | `energy/heatpump/telemetry` |
 | Energy Butler | `energy/butler/telemetry` |
 
-Leave a topic empty if you do not have that device.
+If you do not have a device, set its data source to **Not present**. With **JSON** the topic is required.
 
 ## Message
 
@@ -45,7 +45,7 @@ Values are plain numbers. On/off values are sent as `0` or `1`.
 - **Timestamps more than 60 s in the future** are rejected. In that case the clock of the source or of the ioBroker host is wrong.
 - **One message is a complete snapshot.** Send all fields you have in every message. A known field that is missing, or that is not a number, sets its data point to `null` with quality `0x82` (sensor reported no value), so an old value does not stay.
 - **Missing is not 0.** If a sensor fails, leave its field out instead of sending 0. 0 is a valid value.
-- **New fields** that are not listed below are created automatically as numbers and reported once in the log.
+- **New fields** that are not listed below are created automatically as numbers and reported once in the log. Their name becomes part of the data point ID, so it may only contain lowercase letters, digits and `_`, must start with a letter and must not be `info` or `mtecmqtt`. Other names are ignored with a warning.
 - **Outdated data:** If the last measurement is older than the configured limit (default 20 s), `<device>.info.stale` becomes `true`. A send interval of a few seconds (for example 5 s) is recommended.
 - **QoS and retain:** QoS 0 or 1 both work. Retain is not needed; a retained message is processed like any other, and `info.stale` shows its age.
 

@@ -203,6 +203,16 @@ test('unexpected topics are skipped', () => {
     assert.equal(s.pending, false);
 });
 
+test('IDs of further values are lowercase, other characters become _', () => {
+    const s = source();
+    s.handle(`MTEC/${SERIAL}/Custom-Group/Some.Value`, '1', T0);
+    const [rec] = s.flush(T0 + 2_500);
+    const e = extra(rec, 'butler.mtecmqtt.custom_group.some_value');
+    assert.equal(e.val, 1);
+    assert.equal(e.common.name, 'MTECmqtt Custom-Group/Some.Value');
+    assert.deepEqual(e.channels[1], { id: 'butler.mtecmqtt.custom_group', name: 'Custom-Group' });
+});
+
 test('values: numbers, text and a stable type per data point', () => {
     assert.equal(parseValue('38.400'), 38.4);
     assert.equal(parseValue('-628'), -628);

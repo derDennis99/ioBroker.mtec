@@ -109,6 +109,14 @@ tests.integration(path.join(__dirname, '..'), {
                 expect((await getState(harness, 'mtec.0.butler.pv1_power_w')).val).to.equal(null);
                 expect((await getState(harness, 'mtec.0.butler.info.stale')).val).to.equal(false);
                 expect((await getState(harness, 'mtec.0.analysis.cost_now_per_h')).val).to.equal(0.3);
+                expect((await getState(harness, 'mtec.0.butler.info.connection')).val).to.equal(true);
+
+                // the old input profile was taken over into one data source per device
+                const instance = await harness.objects.getObjectAsync('system.adapter.mtec.0');
+                expect(instance?.native.profile).to.equal(undefined);
+                expect(instance?.native.butlerSource).to.equal('json');
+                expect(instance?.native.heatpumpSource).to.equal('json');
+                expect(instance?.native.password).to.not.equal('secret', 'the password stays encrypted');
             });
         });
     },

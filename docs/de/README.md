@@ -4,18 +4,20 @@ Der Adapter liest einen M-TEC **Energy Butler** (Hybrid-Wechselrichter mit PV un
 
 Der Adapter liest nur. Er schreibt nie etwas an die Geräte zurück.
 
+Hersteller: [M-TEC Systems](https://www.mtec-systems.com/) ([Energy-Butler](https://www.mtec-systems.com/en/products/energy-butler/), [Wärmepumpen](https://www.mtec-systems.com/en/heat-pumps/), englische Seiten)
+
 > Dieser Adapter ist ein privates Community-Projekt. Er ist **nicht mit M-TEC verbunden** und wird von M-TEC weder unterstützt noch empfohlen. Alle Produktnamen gehören ihren Inhabern.
 
 ## Datenquellen
 
-Der Adapter spricht nicht direkt mit den Geräten. Er liest ihre Werte von einem MQTT-Broker, in einem von zwei Formaten („Eingangsprofile“):
+Der Adapter spricht nicht direkt mit den Geräten. Er liest ihre Werte von einem MQTT-Broker, in einem von zwei Formaten („Eingangsprofile“). Die Datenquelle wird pro Gerät gewählt:
 
 | Profil | Geräte | Quelle |
 |---|---|---|
 | `json` | Energy Butler und Wärmepumpe | Ein Topic je Gerät mit einer JSON-Nachricht aus `fields` und `timestamp`. Jede Quelle kann sie erzeugen, z. B. Node-RED oder ein Skript. [Formatbeschreibung](../profile-json.md) (englisch) |
 | `mtecmqtt` | Energy Butler | Die MQTT-Ausgabe von [MTECmqtt](https://github.com/croedel/MTECmqtt). [Details und Zuordnung](../profile-mtecmqtt.md) (englisch) |
 
-Mit `mtecmqtt` kann die Wärmepumpe gleichzeitig weiter über `json` gelesen werden.
+So kann z. B. der Energy Butler über `mtecmqtt` kommen und die Wärmepumpe gleichzeitig über `json`.
 
 Ein direkter Zugriff über Modbus (ohne Zusatzsoftware) ist für eine spätere Version geplant.
 
@@ -29,13 +31,15 @@ Der Adapter ist auf npm veröffentlicht und wird gerade ins ioBroker-Repository 
 
 | Einstellung | Bedeutung |
 |---|---|
-| Broker, Port, Benutzer, Passwort | Verbindung zum MQTT-Broker. Das Passwort wird verschlüsselt gespeichert. |
-| Eingangsprofil | `json` oder `mtecmqtt` |
-| Topics (`json`) | Ein Topic je Gerät, leer = Gerät nicht vorhanden |
+| Energy Butler, Wärmepumpe | Datenquelle pro Gerät: `json`, `mtecmqtt` (nur Energy Butler) oder „nicht vorhanden“ |
+| Topics (`json`) | Ein Topic je Gerät |
 | Topic-Präfix, Seriennummer (`mtecmqtt`) | `MQTT_TOPIC` von MTECmqtt (Standard `MTEC`); Seriennummer leer = die erste gesehene |
 | Daten gelten als veraltet nach | Grenze für `info.stale` (Standard 20 s) |
 | Langsame MTECmqtt-Gruppen gelten als veraltet nach | Grenze für Phasen- und PV-String-Werte (Standard 180 s) |
+| Broker, Port, Benutzer, Passwort | Verbindung zum MQTT-Broker, nur für `json` und `mtecmqtt` nötig. Das Passwort wird verschlüsselt gespeichert. |
 | Auswertung | Nutzbare Akku-Kapazität, Mindestladestand, Strompreis und Einspeisevergütung (Cent pro kWh, 0 = nicht gesetzt, Werte unter 1 gelten als Währungseinheit pro kWh), Währung, Schwelle für „Sonnenstrom übrig“ |
+
+Einstellungen von Version 0.4 und älter (ein Eingangsprofil für beide Geräte) werden beim ersten Start automatisch übernommen, die Instanz startet dabei einmal neu.
 
 Läuft alles, ist `mtec.0.info.connection` `true`, die Datenpunkte unter `mtec.0.butler.*` (und `mtec.0.heatpump.*`) füllen sich, und `info.stale` steht auf `false`.
 
@@ -43,10 +47,11 @@ Läuft alles, ist `mtec.0.info.connection` `true`, die Datenpunkte unter `mtec.0
 
 | Pfad | Inhalt |
 |---|---|
-| `info.connection` | Verbindung zum Broker |
+| `info.connection` | `true`, wenn alle eingestellten Datenquellen verbunden sind |
 | `heatpump.<feld>` | 25 Werte der Wärmepumpe mit Einheit und Rolle, Statuscodes mit Texten |
 | `butler.<feld>` | 16 Werte des Energy Butlers |
 | `butler.mtecmqtt.<gruppe>.<name>` | Weitere Werte von MTECmqtt (nur Profil `mtecmqtt`) |
+| `<gerät>.info.connection` | Verbindung zur Datenquelle des Geräts (bei `json` und `mtecmqtt`: der Broker) |
 | `<gerät>.info.lastMeasurement` | Zeitpunkt der letzten Messung (ms) |
 | `<gerät>.info.stale` | `true`, wenn die letzte Messung älter ist als die eingestellte Grenze |
 | `butler.info.serial` | Seriennummer (nur Profil `mtecmqtt`) |

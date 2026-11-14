@@ -34,8 +34,8 @@ test('field and analysis names exist in all languages', () => {
 
 test('all objects the adapter creates have names in all languages', async () => {
     for (const config of [
-        { topicHeatpump: 'hp', topicButler: 'b', staleSeconds: 20 },
-        { profile: 'mtecmqtt', topicHeatpump: 'hp', staleSeconds: 30 },
+        { butlerSource: 'json', heatpumpSource: 'json', topicHeatpump: 'hp', topicButler: 'b', staleSeconds: 20 },
+        { butlerSource: 'mtecmqtt', heatpumpSource: 'json', topicHeatpump: 'hp', staleSeconds: 30 },
     ]) {
         const objects = {};
         const adapter = {
@@ -71,6 +71,7 @@ test('t() replaces the placeholder in all languages', () => {
 test('every translation is used', () => {
     const used = new Set([
         'Data older than %s s',
+        'Connected to the data source',
         'Time of the last measurement',
         'Serial number',
         'Analysis',
