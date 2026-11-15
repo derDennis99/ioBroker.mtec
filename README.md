@@ -103,7 +103,7 @@ The tests cover both input profiles, the analysis and the whole path through a l
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.5.1 (2026-11-15)
 
 - No more "DB closed" errors in the log when the settings of 0.4 are taken over: the instance now only restarts and starts working after the restart
 
@@ -136,10 +136,6 @@ The tests cover both input profiles, the analysis and the whole path through a l
 - (breaking) Requires Node.js 22, js-controller 6.0.11 and admin 7.6.20 or newer
 - Admin interface and adapter description in all ioBroker languages
 - New adapter icon
-
-### 0.3.0 (2026-10-17)
-
-- Configurable currency; grid balance (+ revenue / − cost per hour) as number and text
 
 Older changes: [CHANGELOG_OLD.md](CHANGELOG_OLD.md)
 

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mtec",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "news": {
+      "0.5.1": {
+        "en": "No more \"DB closed\" errors in the log when the settings of version 0.4 are taken over; the instance restarts and only then starts working",
+        "de": "Keine „DB closed“-Fehler mehr im Log, wenn die Einstellungen von Version 0.4 übernommen werden; die Instanz startet neu und arbeitet erst danach",
+        "ru": "Больше нет ошибок «DB closed» в журнале при переносе настроек версии 0.4; экземпляр перезапускается и только после этого начинает работу",
+        "pt": "Sem erros «DB closed» no registo ao transferir as configurações da versão 0.4; a instância reinicia e só depois começa a trabalhar",
+        "nl": "Geen „DB closed”-fouten meer in het logboek bij het overnemen van de instellingen van versie 0.4; de instantie herstart en begint pas daarna te werken",
+        "fr": "Plus d'erreurs « DB closed » dans le journal lors de la reprise des réglages de la version 0.4 ; l'instance redémarre et ne travaille qu'ensuite",
+        "it": "Nessun errore «DB closed» nel log quando vengono riprese le impostazioni della versione 0.4; l'istanza si riavvia e solo dopo inizia a lavorare",
+        "es": "Ya no hay errores «DB closed» en el registro al adoptar los ajustes de la versión 0.4; la instancia se reinicia y solo entonces empieza a trabajar",
+        "pl": "Brak błędów „DB closed” w dzienniku przy przejmowaniu ustawień z wersji 0.4; instancja uruchamia się ponownie i dopiero potem zaczyna pracę",
+        "uk": "Більше немає помилок «DB closed» у журналі під час перенесення налаштувань версії 0.4; екземпляр перезапускається і лише потім починає роботу",
+        "zh-cn": "接管 0.4 版本的设置时，日志中不再出现 “DB closed” 错误；实例会先重启，之后才开始工作"
+      },
       "0.5.0": {
         "en": "Data source per device (JSON, MTECmqtt or \"not present\"); the MQTT broker is only needed for MQTT sources. Existing settings are taken over automatically.\nNew data points butler.info.connection and heatpump.info.connection; info.connection is true if all configured data sources are connected\nProfile json: new fields are only created if their name consists of a-z, 0-9 and _; other names are ignored with a warning\nProfile mtecmqtt: IDs below butler.mtecmqtt are always lowercase\nLink to the manufacturer in the README",
         "de": "Datenquelle pro Gerät (JSON, MTECmqtt oder „nicht vorhanden“); der MQTT-Broker wird nur für MQTT-Quellen benötigt. Bestehende Einstellungen werden automatisch übernommen.\nNeue Datenpunkte butler.info.connection und heatpump.info.connection; info.connection ist true, wenn alle eingestellten Datenquellen verbunden sind\nProfil json: neue Felder werden nur angelegt, wenn ihr Name aus a-z, 0-9 und _ besteht; andere Namen werden mit einer Warnung ignoriert\nProfil mtecmqtt: IDs unterhalb von butler.mtecmqtt sind immer kleingeschrieben\nLink zum Hersteller in der README",
