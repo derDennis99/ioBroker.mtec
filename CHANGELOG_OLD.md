@@ -1,4 +1,7 @@
 # Older changes
+## 0.2.1 (2026-10-17)
+
+- Prices below 1 are read as currency units per kWh; clearer labels
 
 ## 0.2.0 (2026-10-17)
 

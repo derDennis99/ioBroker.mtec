@@ -103,7 +103,7 @@ The tests cover both input profiles, the analysis and the whole path through a l
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.5.0 (2026-11-15)
 
 - Data source per device (`butlerSource`, `heatpumpSource`, also "not present"), the MQTT broker is only needed for MQTT sources. Existing settings are taken over automatically.
 - New data points `butler.info.connection` and `heatpump.info.connection`; `info.connection` is `true` if all configured data sources are connected
@@ -136,10 +136,6 @@ The tests cover both input profiles, the analysis and the whole path through a l
 ### 0.3.0 (2026-10-17)
 
 - Configurable currency; grid balance (+ revenue / − cost per hour) as number and text
-
-### 0.2.1 (2026-10-17)
-
-- Prices below 1 are read as currency units per kWh; clearer labels
 
 Older changes: [CHANGELOG_OLD.md](CHANGELOG_OLD.md)
 
