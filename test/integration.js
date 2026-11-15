@@ -1,4 +1,4 @@
-const path = require('path');
+﻿const path = require('path');
 const net = require('net');
 const { once } = require('events');
 const { tests } = require('@iobroker/testing');
@@ -95,7 +95,8 @@ tests.integration(path.join(__dirname, '..'), {
                         port,
                         username: 'reader',
                         password: 'secret',
-                        profile: 'json',
+                        butlerSource: 'json',
+                        heatpumpSource: 'json',
                         priceImportCt: 30,
                     },
                 });
@@ -110,13 +111,36 @@ tests.integration(path.join(__dirname, '..'), {
                 expect((await getState(harness, 'mtec.0.butler.info.stale')).val).to.equal(false);
                 expect((await getState(harness, 'mtec.0.analysis.cost_now_per_h')).val).to.equal(0.3);
                 expect((await getState(harness, 'mtec.0.butler.info.connection')).val).to.equal(true);
+            });
+        });
 
-                // the old input profile was taken over into one data source per device
-                const instance = await harness.objects.getObjectAsync('system.adapter.mtec.0');
-                expect(instance?.native.profile).to.equal(undefined);
-                expect(instance?.native.butlerSource).to.equal('json');
-                expect(instance?.native.heatpumpSource).to.equal('json');
-                expect(instance?.native.password).to.not.equal('secret', 'the password stays encrypted');
+        suite('with settings of 0.4', getHarness => {
+            it('takes over the input profile and waits for the restart', async function () {
+                this.timeout(60_000);
+                const harness = getHarness();
+                await harness.changeAdapterConfig('mtec', {
+                    native: {
+                        host: '127.0.0.1',
+                        username: 'reader',
+                        password: 'secret',
+                        profile: 'mtecmqtt',
+                        topicButler: '',
+                    },
+                });
+                await harness.startAdapterAndWait();
+
+                // one data source per device instead of the old input profile
+                const instance = async () => (await harness.objects.getObjectAsync('system.adapter.mtec.0'))?.native;
+                await waitFor(async () => (await instance())?.profile === undefined);
+                const native = await instance();
+                expect(native?.butlerSource).to.equal('mtecmqtt');
+                expect(native?.heatpumpSource).to.equal('json');
+                expect(native?.password).to.not.equal('secret', 'the password stays encrypted');
+
+                // nothing is started before js-controller restarts the instance
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                expect((await getState(harness, 'mtec.0.info.connection'))?.val).to.not.equal(true);
+                expect(await harness.objects.getObjectAsync('mtec.0.butler.info.stale')).to.equal(null);
             });
         });
     },

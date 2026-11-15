@@ -103,6 +103,10 @@ The tests cover both input profiles, the analysis and the whole path through a l
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- No more "DB closed" errors in the log when the settings of 0.4 are taken over: the instance now only restarts and starts working after the restart
+
 ### 0.5.0 (2026-11-15)
 
 - Data source per device (`butlerSource`, `heatpumpSource`, also "not present"), the MQTT broker is only needed for MQTT sources. Existing settings are taken over automatically.

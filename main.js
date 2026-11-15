@@ -16,6 +16,10 @@ class Mtec extends utils.Adapter {
     async onReady() {
         await this.setStateAsync('info.connection', false, true);
         const config = await this.migrateSettings();
+        if (!config) {
+            // js-controller restarts the instance with the stored settings.
+            return;
+        }
         const errors = checkConfig(config);
         if (errors.length) {
             errors.forEach(e => this.log.error(e));
@@ -30,9 +34,10 @@ class Mtec extends utils.Adapter {
 
     /**
      * Takes over the settings of version 0.4 and older (one input profile) once and stores them in the
-     * instance. js-controller then restarts the instance; until then the adapter works with the new keys.
+     * instance. js-controller then restarts the instance, so this start does nothing more: work begun now
+     * would run into the shutdown.
      *
-     * @returns {Promise<Record<string, any>>} the configuration to work with
+     * @returns {Promise<Record<string, any> | null>} the configuration to work with, null if the instance restarts
      */
     async migrateSettings() {
         /** @type {Record<string, any>} */
@@ -45,16 +50,17 @@ class Mtec extends utils.Adapter {
         Object.assign(config, update);
         const id = `system.adapter.${this.namespace}`;
         const obj = await this.getForeignObjectAsync(id);
-        if (obj) {
-            // Only these keys change, the stored (encrypted) password stays as it is.
-            delete obj.native.profile;
-            Object.assign(obj.native, update);
-            await this.setForeignObjectAsync(id, obj);
+        if (!obj) {
+            return config;
         }
+        // Only these keys change, the stored (encrypted) password stays as it is.
+        delete obj.native.profile;
+        Object.assign(obj.native, update);
         this.log.info(
-            `Settings taken over: Energy Butler via ${update.butlerSource}, heat pump via ${update.heatpumpSource}`,
+            `Settings taken over: Energy Butler via ${update.butlerSource}, heat pump via ${update.heatpumpSource}. The instance restarts.`,
         );
-        return config;
+        await this.setForeignObjectAsync(id, obj);
+        return null;
     }
 
     async onUnload(callback) {
@@ -63,6 +69,8 @@ class Mtec extends utils.Adapter {
                 await this.bridge.stop();
             }
             await this.setStateAsync('info.connection', false, true);
+        } catch {
+            // The database may already be closed when the instance is shut down.
         } finally {
             callback();
         }
